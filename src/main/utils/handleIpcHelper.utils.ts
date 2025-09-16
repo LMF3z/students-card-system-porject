@@ -1,0 +1,35 @@
+import {
+  ERROR_CHANNEL,
+  SUCCESS_CHANNEL,
+} from '../ipcHandlers/ipcHandlers.constants.js';
+
+// Promise<{ success: boolean; data: T | null; error: any | null }>
+
+export const handleIpcHelper = async <T>({
+  event,
+  data,
+  callback,
+  successMsg = '',
+}: {
+  event: any;
+  data: T;
+  callback: (args: T) => Promise<T | null>;
+  successMsg?: string;
+}): Promise<void> => {
+  try {
+    const results = await callback(data);
+
+    event.sender.send(SUCCESS_CHANNEL, {
+      type: SUCCESS_CHANNEL,
+      message: successMsg,
+      data: results,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    event.sender.send(ERROR_CHANNEL, {
+      type: ERROR_CHANNEL,
+      message: error.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+};

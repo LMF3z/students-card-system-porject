@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    /* @apply dark text-[#dadcda] bg-background; */
+}
+
+@layer base {
+    body {
+        
+    }
+    
+    h1 {
+        @apply text-3xl;
+    }
+}
+
+.screen-container {
+    @apply w-full h-screen;
+}

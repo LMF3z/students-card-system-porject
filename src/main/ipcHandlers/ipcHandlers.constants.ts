@@ -1,0 +1,10 @@
+export const PING_HANDLER = 'ping';
+
+export const ERROR_CHANNEL = 'ERROR_CHANNEL';
+export const SUCCESS_CHANNEL = 'SUCCESS_CHANNEL';
+
+export const GET_ADMIN_USER = 'GET_ADMIN_USER';
+export const REGISTER_ADMIN_USER = 'REGISTER_ADMIN_USER';
+export const LOGIN_USER = 'LOGIN_USER';
+export const LOGIN_USER_ACCESS = 'LOGIN_USER_ACCESS';
+export const LOGOUT_ADMIN_USER = 'LOGOUT_ADMIN_USER';

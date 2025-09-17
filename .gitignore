@@ -6,4 +6,5 @@ out
 *.log*
 .env
 .vscode
+dist.tar.gz
 

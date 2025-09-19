@@ -1,16 +1,15 @@
 import { SchoolGradesI } from '../../interfaces/grades/grades.interface'
 import { SchoolGradesRepository } from '../../repositories/school-grades/school-grades-repository'
 
-export const createSchoolGradeController = async (payload: SchoolGradesI & { userId: number }) => {
-  const { grade_title, grade_section, userId } = payload
+export const createSchoolGradeController = async (payload: SchoolGradesI) => {
+  const { grade_title, grade_section } = payload
 
   if (!grade_title || !grade_section) {
     throw new Error('Título y sección de la calificación son requeridos')
   }
 
   const newGrade: SchoolGradesI = {
-    ...payload,
-    register_by: userId
+    ...payload
   }
 
   const result = await SchoolGradesRepository.create(newGrade)
@@ -39,7 +38,6 @@ export const getSchoolGradesController = async (params: {
   userId: number
 }) => {
   const result = await SchoolGradesRepository.findAll(params)
-
   return result
 }
 

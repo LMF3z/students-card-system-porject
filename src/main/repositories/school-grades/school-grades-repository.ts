@@ -30,16 +30,13 @@ export class SchoolGradesRepository {
 
   static async findAll(params: { offset?: number; limit?: number; userId: number }) {
     try {
-      const { offset = 0, limit = LIMIT, userId } = params
-      const saved = await GradesModel.findAll({
-        where: {
-          register_by: userId
-        },
+      const { offset = 0, limit = LIMIT } = params
+      const saved = await GradesModel.findAndCountAll({
         offset,
         limit
       })
 
-      return saved.map((grade) => grade.dataValues)
+      return saved
     } catch (error) {
       return []
     }

@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import {
   ERROR_CHANNEL,
   GET_ADMIN_USER,
+  GET_SCHOOL_GRADES_RESPONSE,
   LOGIN_USER,
   LOGIN_USER_ACCESS,
   REGISTER_ADMIN_USER,
@@ -73,33 +74,38 @@ export const loadIpcHandlers = () => {
       successMsg: 'Grado creado correctamente'
     })
   )
-  ipcMain.on(GET_SCHOOL_GRADES, (event, params) =>
+  ipcMain.on(GET_SCHOOL_GRADES, async (event, params) => {
+    try {
+      const results = await getSchoolGradesController(params)
+      event.sender.send(GET_SCHOOL_GRADES_RESPONSE, results)
+    } catch (error: any) {
+      event.sender.send(ERROR_CHANNEL, {
+        type: ERROR_CHANNEL,
+        message: error.message,
+        timestamp: new Date().toISOString()
+      })
+      event.sender.send(LOGIN_USER_ACCESS, null)
+    }
+  })
+  ipcMain.on(GET_SCHOOL_GRADE, (event, id) =>
     handleIpcHelper({
       event,
-      data: params,
-      callback: getSchoolGradesController,
-      successMsg: 'Calificaciones obtenidas correctamente'
-    })
-  )
-  ipcMain.on(GET_SCHOOL_GRADE, (event, { id, userId }) =>
-    handleIpcHelper({
-      event,
-      data: { id, userId },
+      data: id,
       callback: getSchoolGradeController
     })
   )
-  ipcMain.on(UPDATE_SCHOOL_GRADE, (event, { id, data, userId }) =>
+  ipcMain.on(UPDATE_SCHOOL_GRADE, (event, payload) =>
     handleIpcHelper({
       event,
-      data: { id, data, userId },
+      data: payload,
       callback: updateSchoolGradeController,
       successMsg: 'Grado actualizado correctamente'
     })
   )
-  ipcMain.on(DELETE_SCHOOL_GRADE, (event, { id, userId }) =>
+  ipcMain.on(DELETE_SCHOOL_GRADE, (event, id) =>
     handleIpcHelper({
       event,
-      data: { id, userId },
+      data: id,
       callback: deleteSchoolGradeController,
       successMsg: 'Grado eliminado correctamente'
     })

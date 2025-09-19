@@ -2,6 +2,8 @@ import { contextBridge, ipcRenderer } from 'electron'
 import {
   ERROR_CHANNEL,
   GET_ADMIN_USER,
+  GET_SCHOOL_GRADES,
+  GET_SCHOOL_GRADES_RESPONSE,
   LOGIN_USER,
   LOGIN_USER_ACCESS,
   REGISTER_ADMIN_USER,
@@ -29,6 +31,21 @@ if (process.contextIsolated) {
           })
         })
       },
+
+      // CREATE_SCHOOL_GRADE: (payload: CreateSchoolGradeI) => Promise<void>
+      GET_SCHOOL_GRADES: (args: any) => {
+        return ipcRenderer.send(GET_SCHOOL_GRADES, args)
+      },
+      GET_SCHOOL_GRADES_RESPONSE: (): Promise<any> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(GET_SCHOOL_GRADES_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      // GET_SCHOOL_GRADE: (params: GetSchoolGradeI) => Promise<void>
+      // UPDATE_SCHOOL_GRADE: (params: UpdateSchoolGradeI) => Promise<void>
+      // DELETE_SCHOOL_GRADE: (params: DeleteSchoolGradeI) => Promise<void>
 
       onSuccessCreate: (callback: (data: any) => void) => {
         ipcRenderer.on(SUCCESS_CHANNEL, (_, successData) => {

@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppLayout } from './presentation/components/layouts/AppLayout'
 import { router } from './routes/routes.constants'
 import { PrivateRoute, PublicRoute } from './presentation/components'
-import { HomeScreen, LoginScreen, RegisterScreen } from './presentation/screens'
+import { HomeScreen, LoginScreen, RegisterScreen, SchoolGradesScreen } from './presentation/screens'
 import { ElectronSuccessAndErrorContextProvider } from './internal/hooks'
 
 function App() {
@@ -20,6 +20,7 @@ function App() {
 
               <Route element={<PrivateRoute />}>
                 <Route path={router.homeScreen} element={<HomeScreen />} />
+                <Route path={router.schoolGradesScreen} element={<SchoolGradesScreen />} />
               </Route>
 
               <Route path="*" element={<LoginScreen />} />

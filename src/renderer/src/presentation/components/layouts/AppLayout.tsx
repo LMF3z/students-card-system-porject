@@ -9,8 +9,9 @@ import MuiAppBar, { type AppBarProps as MuiAppBarProps } from '@mui/material/App
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Drawer from '@mui/material/Drawer'
+import { Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 
-import { router } from '../../../routes/routes.constants'
+import { drawerRoutes, router } from '../../../routes/routes.constants'
 import { useAuthStore } from '../../../internal/store'
 
 const drawerWidth = 240
@@ -151,6 +152,21 @@ export const AppLayout = ({ children }: { children: ReactNode }) => {
                 {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
               </IconButton>
             </DrawerHeader>
+
+            <List>
+              {drawerRoutes.map(({ title, link, icon: Icon }) => (
+                <Link key={title} href={link}>
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <Icon />{' '}
+                      </ListItemIcon>
+                      <ListItemText primary={title} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+              ))}
+            </List>
           </Drawer>
 
           <Main open={open}>

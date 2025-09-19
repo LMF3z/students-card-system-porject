@@ -16,6 +16,21 @@ import {
 import { type UserI, type LoginI } from '../interfaces/user/user.interface.js'
 import { handleIpcHelper } from '../utils/handleIpcHelper.utils.js'
 
+import {
+  createSchoolGradeController,
+  getSchoolGradeController,
+  getSchoolGradesController,
+  updateSchoolGradeController,
+  deleteSchoolGradeController
+} from '../controllers/school-grades/school-grades-controllers.js'
+import {
+  CREATE_SCHOOL_GRADE,
+  GET_SCHOOL_GRADE,
+  GET_SCHOOL_GRADES,
+  UPDATE_SCHOOL_GRADE,
+  DELETE_SCHOOL_GRADE
+} from './ipcHandlers.constants.js'
+
 export const loadIpcHandlers = () => {
   ipcMain.handle(GET_ADMIN_USER, getIfExistAdminController)
 
@@ -48,4 +63,45 @@ export const loadIpcHandlers = () => {
       event.sender.send(LOGIN_USER_ACCESS, null)
     }
   })
+
+  // grades
+  ipcMain.on(CREATE_SCHOOL_GRADE, (event, payload) =>
+    handleIpcHelper({
+      event,
+      data: payload,
+      callback: createSchoolGradeController,
+      successMsg: 'Grado creado correctamente'
+    })
+  )
+  ipcMain.on(GET_SCHOOL_GRADES, (event, params) =>
+    handleIpcHelper({
+      event,
+      data: params,
+      callback: getSchoolGradesController,
+      successMsg: 'Calificaciones obtenidas correctamente'
+    })
+  )
+  ipcMain.on(GET_SCHOOL_GRADE, (event, { id, userId }) =>
+    handleIpcHelper({
+      event,
+      data: { id, userId },
+      callback: getSchoolGradeController
+    })
+  )
+  ipcMain.on(UPDATE_SCHOOL_GRADE, (event, { id, data, userId }) =>
+    handleIpcHelper({
+      event,
+      data: { id, data, userId },
+      callback: updateSchoolGradeController,
+      successMsg: 'Grado actualizado correctamente'
+    })
+  )
+  ipcMain.on(DELETE_SCHOOL_GRADE, (event, { id, userId }) =>
+    handleIpcHelper({
+      event,
+      data: { id, userId },
+      callback: deleteSchoolGradeController,
+      successMsg: 'Grado eliminado correctamente'
+    })
+  )
 }

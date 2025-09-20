@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { Modal } from '@mui/material'
+
 import type { SchoolGradesI } from '../../../internal/interface/grades/grades.interface'
 import { MaterialInput } from '../inputs/MaterialInput'
 import { MaterialButton } from '../buttons/MaterialButton'
@@ -30,6 +32,11 @@ export const SchoolGradesModal = ({
     }
   }, [isOpen, initialData])
 
+  const handleClose = () => {
+    onClose()
+    setFormData({ grade_title: '', grade_section: '' })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -44,12 +51,54 @@ export const SchoolGradesModal = ({
     }
   }
 
-  const handleClose = () => {
-    onClose()
-    setFormData({ grade_title: '', grade_section: '' })
-  }
+  return (
+    <Modal
+      open={isOpen}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+      className="bg-[rgba(0,0,0,0.5)]"
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="p-4 absolute bg-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{ padding: '1rem' }}
+      >
+        <MaterialInput
+          label="Grado"
+          value={formData.grade_title}
+          onChange={(e) => setFormData({ ...formData, grade_title: e.target.value })}
+          required
+          fullWidth
+          style={{ marginBottom: '1rem' }}
+        />
 
-  if (!isOpen) return null
+        <MaterialInput
+          label="Sección"
+          value={formData.grade_section}
+          onChange={(e) => setFormData({ ...formData, grade_section: e.target.value })}
+          required
+          fullWidth
+        />
+
+        <div
+          style={{ marginTop: '1rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}
+        >
+          <MaterialButton variant="outlined" onClick={handleClose} disabled={loading}>
+            Cancelar
+          </MaterialButton>
+
+          <MaterialButton
+            type="submit"
+            variant="contained"
+            disabled={loading || !formData.grade_title || !formData.grade_section}
+          >
+            {loading ? 'Guardando...' : mode === 'create' ? 'Crear' : 'Actualizar'}
+          </MaterialButton>
+        </div>
+      </form>
+    </Modal>
+  )
 
   return (
     <div

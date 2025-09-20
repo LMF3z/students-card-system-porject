@@ -4,79 +4,57 @@ import { LIMIT } from '../constants'
 
 export class SchoolGradesRepository {
   static async create(newGrade: SchoolGradesI) {
-    try {
-      const saved = await GradesModel.create(newGrade)
-
-      return saved?.dataValues
-    } catch (error) {
-      return null
-    }
+    const saved = await GradesModel.create(newGrade)
+    return saved?.dataValues
   }
 
   static async findOne(id: number, userId: number) {
-    try {
-      const saved = await GradesModel.findOne({
-        where: {
-          id,
-          register_by: userId
-        }
-      })
+    const saved = await GradesModel.findOne({
+      where: {
+        id,
+        register_by: userId
+      }
+    })
 
-      return saved?.dataValues
-    } catch (error) {
-      return null
-    }
+    return saved?.dataValues
   }
 
   static async findAll(params: { offset?: number; limit?: number; userId: number }) {
-    try {
-      const { offset = 0, limit = LIMIT } = params
-      const saved = await GradesModel.findAndCountAll({
-        offset,
-        limit
-      })
+    const { offset = 0, limit = LIMIT } = params
+    const saved = await GradesModel.findAndCountAll({
+      offset,
+      limit
+    })
 
-      return saved
-    } catch (error) {
-      return []
-    }
+    return saved
   }
 
-  static async update(id: number, newGrade: Partial<SchoolGradesI>, userId: number) {
-    try {
-      const existing = await GradesModel.findOne({
-        where: { id, register_by: userId }
-      })
-      if (!existing) return null
+  static async update(id: number, newGrade: SchoolGradesI) {
+    const existing = await GradesModel.findOne({
+      where: { id }
+    })
+    if (!existing) return null
 
-      const [affected] = await GradesModel.update(newGrade, {
-        where: { id, register_by: userId }
-      })
+    const [affected] = await GradesModel.update(newGrade, {
+      where: { id }
+    })
 
-      if (affected === 0) return null
+    if (affected === 0) return null
 
-      const updated = await GradesModel.findOne({
-        where: { id, register_by: userId }
-      })
+    const updated = await GradesModel.findOne({
+      where: { id }
+    })
 
-      return updated?.dataValues
-    } catch (error) {
-      return null
-    }
+    return updated?.dataValues
   }
 
-  static async delete(id: number, userId: number) {
-    try {
-      const affected = await GradesModel.destroy({
-        where: {
-          id,
-          register_by: userId
-        }
-      })
+  static async delete(id: number) {
+    const affected = await GradesModel.destroy({
+      where: {
+        id
+      }
+    })
 
-      return affected > 0
-    } catch (error) {
-      return false
-    }
+    return affected > 0
   }
 }

@@ -1,4 +1,17 @@
 import { useState } from 'react'
+import { FilePenLine, Trash2 } from 'lucide-react'
+import {
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow
+} from '@mui/material'
+
 import {
   useGetSchoolGradesQuery,
   useCreateSchoolGradeMutation,
@@ -9,42 +22,57 @@ import { Loader } from '../../components/Loader'
 import { SchoolGradesModal } from '../../components/modals/SchoolGradesModal'
 import { MaterialButton } from '../../components/buttons/MaterialButton'
 import type { SchoolGradesI } from '../../../internal/interface/grades/grades.interface'
-import { useAuthStore } from '../../../internal/store/useAuthStore'
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow
-} from '@mui/material'
 import { useCheckEvent } from '@renderer/internal/hooks'
 
 export const SchoolGradesScreen = () => {
-  const { isAuth } = useAuthStore()
-  const userId = isAuth?.id
-
   const [grades, setGrades] = useState({ rows: [] as SchoolGradesI[], count: 0 })
   const [selectedGrade, setSelectedGrade] = useState<SchoolGradesI | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<'create' | 'update'>('create')
-  const [offset, setOffset] = useState(0)
-  const limit = 20
+  const [page, setPage] = useState(0)
+  const [limit, setLimit] = useState(20)
+  const offset = page * limit
 
-  const { isPending: isGetting } = useGetSchoolGradesQuery(offset, limit)
+  const {
+    isPending: isGetting,
+    refetch: refetchGetting,
+    isRefetching: isRefetchingGetting
+  } = useGetSchoolGradesQuery(offset, limit)
   useCheckEvent({
     event: 'GET_SCHOOL_GRADES_RESPONSE',
-    callback: (data: any) => {
-      if (data) {
-        setGrades(data)
+    callback: (gradesResults: any) => {
+      if (gradesResults) {
+        setGrades(gradesResults)
       }
     }
   })
-  const createMutation = useCreateSchoolGradeMutation()
-  const updateMutation = useUpdateSchoolGradeMutation()
-  const deleteMutation = useDeleteSchoolGradeMutation()
+  const { mutate: createMutation, isPending: isCreating } = useCreateSchoolGradeMutation()
+  useCheckEvent({
+    event: 'CREATE_SCHOOL_GRADE_RESPONSE',
+    callback: (data) => {
+      if (data) {
+        refetchGetting()
+      }
+    }
+  })
+  const { mutate: updateMutation, isPending: isUpdating } = useUpdateSchoolGradeMutation()
+  useCheckEvent({
+    event: 'UPDATE_SCHOOL_GRADE_RESPONSE',
+    callback: (data) => {
+      if (data) {
+        refetchGetting()
+      }
+    }
+  })
+  const { mutate: deleteMutation, isPending: isDeleting } = useDeleteSchoolGradeMutation()
+  useCheckEvent({
+    event: 'DELETE_SCHOOL_GRADE_RESPONSE',
+    callback: (data) => {
+      if (data) {
+        refetchGetting()
+      }
+    }
+  })
 
   const handleCreate = () => {
     setModalMode('create')
@@ -59,27 +87,16 @@ export const SchoolGradesScreen = () => {
   }
 
   const handleDelete = (id: number) => {
-    deleteMutation.mutate(id)
+    deleteMutation(id)
   }
 
   const handleModalSubmit = async (data: Partial<SchoolGradesI>) => {
     if (modalMode === 'create') {
-      createMutation.mutate({ ...data, register_by: userId! } as SchoolGradesI)
+      createMutation(data as SchoolGradesI)
     } else if (selectedGrade) {
-      await updateMutation.mutate({ ...selectedGrade, ...data })
+      updateMutation({ ...selectedGrade, ...data })
     }
   }
-
-  const handleNextPage = () => {
-    setOffset((prev) => prev + limit)
-  }
-
-  const handlePrevPage = () => {
-    setOffset((prev) => Math.max(0, prev - limit))
-  }
-
-  // if (isLoading) return <Loader />
-  // if (error) return <div>Error loading grades: {error.message}</div>
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -93,61 +110,67 @@ export const SchoolGradesScreen = () => {
       >
         <h1>Grados</h1>
         <MaterialButton onClick={handleCreate} variant="contained">
-          Crear Nuevo Grado
+          nuevo
         </MaterialButton>
       </div>
 
-      <Loader isLoading={isGetting} />
+      <Loader
+        isLoading={isGetting || isCreating || isRefetchingGetting || isDeleting || isUpdating}
+      />
 
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {['Grado', 'Sección'].map((column) => (
-                  <TableCell key={column} align="center">
-                    {column}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {grades?.rows?.map((row, idx) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                  <TableCell key={idx} align="center">
-                    {row.grade_title}
-                  </TableCell>
-                </TableRow>
+      <TableContainer component={Paper}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {['Grado', 'Sección', 'Acciones'].map((column) => (
+                <TableCell key={column} align="center">
+                  {column}
+                </TableCell>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[20]}
-          component="div"
-          count={grades?.rows.length}
-          rowsPerPage={20}
-          page={0}
-          onPageChange={() => {}}
-          onRowsPerPageChange={() => {}}
-        />
-      </Paper>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {grades?.rows?.map((row, idx) => (
+              <TableRow key={idx}>
+                <TableCell align="center">{row.grade_title}</TableCell>
+                <TableCell align="center">{row.grade_section}</TableCell>
+                <TableCell align="center">
+                  <div className="flex justify-center gap-3">
+                    <IconButton aria-label="delete" onClick={() => handleUpdate(row)}>
+                      <FilePenLine className="text-blue-500" />
+                    </IconButton>
 
-      <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-        <MaterialButton onClick={handlePrevPage} disabled={offset === 0} variant="outlined">
-          Anterior
-        </MaterialButton>
-        <span>Página {Math.floor(offset / limit) + 1}</span>
-        <MaterialButton onClick={handleNextPage} disabled={[].length < limit} variant="outlined">
-          Siguiente
-        </MaterialButton>
-      </div>
+                    <IconButton aria-label="delete" onClick={() => handleDelete(row.id)}>
+                      <Trash2 className="text-red-500" />
+                    </IconButton>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[limit]}
+        component="div"
+        count={grades?.count}
+        rowsPerPage={limit}
+        page={page}
+        onPageChange={(_, page) => {
+          setPage(page)
+        }}
+        onRowsPerPageChange={(event) => {
+          setLimit(+event.target.value)
+          setPage(0)
+        }}
+      />
 
       <SchoolGradesModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         mode={modalMode}
         onSubmit={handleModalSubmit}
+        initialData={selectedGrade || undefined}
       />
     </div>
   )

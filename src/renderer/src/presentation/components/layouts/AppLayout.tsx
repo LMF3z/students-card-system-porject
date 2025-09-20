@@ -3,13 +3,13 @@ import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Toaster } from 'react-hot-toast'
 import { ArrowLeft, ChevronLeftIcon, ChevronRightIcon, MenuIcon, LogOut } from 'lucide-react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { styled, useTheme } from '@mui/material/styles'
 import MuiAppBar, { type AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Drawer from '@mui/material/Drawer'
-import { Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 
 import { drawerRoutes, router } from '../../../routes/routes.constants'
 import { useAuthStore } from '../../../internal/store'
@@ -90,8 +90,6 @@ export const AppLayout = ({ children }: { children: ReactNode }) => {
     navigate(router.loginScreen)
   }
 
-  console.log('location.pathname', router.loginScreen, router.homeScreen, '--', location.pathname)
-
   return (
     <>
       {![router.loginScreen, router.homeScreen].includes(location.pathname) && (
@@ -155,7 +153,7 @@ export const AppLayout = ({ children }: { children: ReactNode }) => {
 
             <List>
               {drawerRoutes.map(({ title, link, icon: Icon }) => (
-                <Link key={title} href={link}>
+                <Link to={link} key={title}>
                   <ListItem disablePadding>
                     <ListItemButton>
                       <ListItemIcon>

@@ -1,5 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import {
+  CREATE_SCHOOL_GRADE,
+  CREATE_SCHOOL_GRADE_RESPONSE,
+  DELETE_SCHOOL_GRADE,
+  DELETE_SCHOOL_GRADE_RESPONSE,
   ERROR_CHANNEL,
   GET_ADMIN_USER,
   GET_SCHOOL_GRADES,
@@ -7,7 +11,9 @@ import {
   LOGIN_USER,
   LOGIN_USER_ACCESS,
   REGISTER_ADMIN_USER,
-  SUCCESS_CHANNEL
+  SUCCESS_CHANNEL,
+  UPDATE_SCHOOL_GRADE,
+  UPDATE_SCHOOL_GRADE_RESPONSE
 } from '../main/ipcHandlers/ipcHandlers.constants'
 // import { electronAPI } from '@electron-toolkit/preload'
 
@@ -32,7 +38,16 @@ if (process.contextIsolated) {
         })
       },
 
-      // CREATE_SCHOOL_GRADE: (payload: CreateSchoolGradeI) => Promise<void>
+      CREATE_SCHOOL_GRADE: (payload: any) => {
+        return ipcRenderer.send(CREATE_SCHOOL_GRADE, payload)
+      },
+      CREATE_SCHOOL_GRADE_RESPONSE: () => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(CREATE_SCHOOL_GRADE_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
       GET_SCHOOL_GRADES: (args: any) => {
         return ipcRenderer.send(GET_SCHOOL_GRADES, args)
       },
@@ -44,8 +59,22 @@ if (process.contextIsolated) {
         })
       },
       // GET_SCHOOL_GRADE: (params: GetSchoolGradeI) => Promise<void>
-      // UPDATE_SCHOOL_GRADE: (params: UpdateSchoolGradeI) => Promise<void>
-      // DELETE_SCHOOL_GRADE: (params: DeleteSchoolGradeI) => Promise<void>
+      UPDATE_SCHOOL_GRADE: (args: any) => {
+        return ipcRenderer.send(UPDATE_SCHOOL_GRADE, args)
+      },
+      UPDATE_SCHOOL_GRADE_RESPONSE: (args: any) => {
+        return ipcRenderer.send(UPDATE_SCHOOL_GRADE_RESPONSE, args)
+      },
+      DELETE_SCHOOL_GRADE: (id: number) => {
+        return ipcRenderer.send(DELETE_SCHOOL_GRADE, id)
+      },
+      DELETE_SCHOOL_GRADE_RESPONSE: (): Promise<void> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(DELETE_SCHOOL_GRADE_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
 
       onSuccessCreate: (callback: (data: any) => void) => {
         ipcRenderer.on(SUCCESS_CHANNEL, (_, successData) => {

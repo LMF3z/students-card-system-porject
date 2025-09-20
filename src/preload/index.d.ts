@@ -11,11 +11,14 @@ declare global {
       loginUserAccess: () => Promise<UserI | null>
 
       CREATE_SCHOOL_GRADE: (payload: CreateSchoolGradeI) => Promise<void>
-      GET_SCHOOL_GRADES_RESPONSE: () => Promise<{ rows: GetSchoolGradeI[]; count: number }>
+      CREATE_SCHOOL_GRADE_RESPONSE: () => Promise<SchoolGradesI>
       GET_SCHOOL_GRADES: (params: { offset?: number; limit?: number }) => Promise<void>
+      GET_SCHOOL_GRADES_RESPONSE: () => Promise<{ rows: GetSchoolGradeI[]; count: number }>
       GET_SCHOOL_GRADE: (params: GetSchoolGradeI) => Promise<void>
       UPDATE_SCHOOL_GRADE: (params: UpdateSchoolGradeI) => Promise<void>
-      DELETE_SCHOOL_GRADE: (params: DeleteSchoolGradeI) => Promise<void>
+      UPDATE_SCHOOL_GRADE_RESPONSE: () => Promise<void>
+      DELETE_SCHOOL_GRADE: (id: number) => Promise<void>
+      DELETE_SCHOOL_GRADE_RESPONSE: () => Promise<void>
 
       onSuccessCreate: (callback: (data: T) => void) => T
       onError: (callback: (error: any) => void) => void

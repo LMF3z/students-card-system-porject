@@ -8,9 +8,7 @@ export const createSchoolGradeController = async (payload: SchoolGradesI) => {
     throw new Error('Título y sección de la calificación son requeridos')
   }
 
-  const newGrade: SchoolGradesI = {
-    ...payload
-  }
+  const newGrade: SchoolGradesI = payload
 
   const result = await SchoolGradesRepository.create(newGrade)
 
@@ -38,16 +36,11 @@ export const getSchoolGradesController = async (params: {
   userId: number
 }) => {
   const result = await SchoolGradesRepository.findAll(params)
-  return result
+  return { rows: result.rows.map((c) => c.dataValues), count: result.count }
 }
 
-export const updateSchoolGradeController = async (payload: {
-  id: number
-  data: Partial<SchoolGradesI>
-  userId: number
-}) => {
-  const { id, data, userId } = payload
-  const { grade_title, grade_section } = data
+export const updateSchoolGradeController = async (payload: SchoolGradesI) => {
+  const { id, grade_title, grade_section } = payload
 
   if (
     (grade_title !== undefined && !grade_title) ||
@@ -56,7 +49,7 @@ export const updateSchoolGradeController = async (payload: {
     throw new Error('Título y sección de la calificación no pueden estar vacíos')
   }
 
-  const result = await SchoolGradesRepository.update(id, data, userId)
+  const result = await SchoolGradesRepository.update(id, payload)
 
   if (!result) {
     throw new Error('Error al actualizar la calificación o no encontrada')
@@ -65,13 +58,12 @@ export const updateSchoolGradeController = async (payload: {
   return result
 }
 
-export const deleteSchoolGradeController = async (payload: { id: number; userId: number }) => {
-  const { id, userId } = payload
-  const result = await SchoolGradesRepository.delete(id, userId)
+export const deleteSchoolGradeController = async (id: number) => {
+  const result = await SchoolGradesRepository.delete(id)
 
   if (!result) {
     throw new Error('Error al eliminar la calificación o no encontrada')
   }
 
-  return { message: 'Calificación eliminada correctamente' }
+  return result
 }

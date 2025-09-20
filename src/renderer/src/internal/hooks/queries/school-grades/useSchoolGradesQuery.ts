@@ -56,9 +56,8 @@ export const useUpdateSchoolGradeMutation = () => {
     mutationFn: (data: SchoolGradesI) => {
       return updateSchoolGradeApi({ ...data, register_by: userId! })
     },
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       client.invalidateQueries({ queryKey: [KEY_GET_SCHOOL_GRADES] })
-      client.invalidateQueries({ queryKey: [KEY_GET_SCHOOL_GRADE, variables.id] })
     },
     retry: false
   })

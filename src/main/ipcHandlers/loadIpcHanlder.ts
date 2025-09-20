@@ -1,12 +1,15 @@
 import { ipcMain } from 'electron'
 import {
+  CREATE_SCHOOL_GRADE_RESPONSE,
+  DELETE_SCHOOL_GRADE_RESPONSE,
   ERROR_CHANNEL,
   GET_ADMIN_USER,
   GET_SCHOOL_GRADES_RESPONSE,
   LOGIN_USER,
   LOGIN_USER_ACCESS,
   REGISTER_ADMIN_USER,
-  SUCCESS_CHANNEL
+  SUCCESS_CHANNEL,
+  UPDATE_SCHOOL_GRADE_RESPONSE
 } from './ipcHandlers.constants.js'
 
 import {
@@ -66,14 +69,26 @@ export const loadIpcHandlers = () => {
   })
 
   // grades
-  ipcMain.on(CREATE_SCHOOL_GRADE, (event, payload) =>
-    handleIpcHelper({
-      event,
-      data: payload,
-      callback: createSchoolGradeController,
-      successMsg: 'Grado creado correctamente'
-    })
-  )
+  ipcMain.on(CREATE_SCHOOL_GRADE, async (event, payload) => {
+    try {
+      const results = await createSchoolGradeController(payload)
+
+      event.sender.send(CREATE_SCHOOL_GRADE_RESPONSE, results)
+      event.sender.send(SUCCESS_CHANNEL, {
+        type: SUCCESS_CHANNEL,
+        message: 'Grado creado correctamente',
+        data: results,
+        timestamp: new Date().toISOString()
+      })
+    } catch (error: any) {
+      console.log('error CREATE_SCHOOL_GRADE ---->', error)
+      event.sender.send(ERROR_CHANNEL, {
+        type: ERROR_CHANNEL,
+        message: error.message,
+        timestamp: new Date().toISOString()
+      })
+    }
+  })
   ipcMain.on(GET_SCHOOL_GRADES, async (event, params) => {
     try {
       const results = await getSchoolGradesController(params)
@@ -84,7 +99,6 @@ export const loadIpcHandlers = () => {
         message: error.message,
         timestamp: new Date().toISOString()
       })
-      event.sender.send(LOGIN_USER_ACCESS, null)
     }
   })
   ipcMain.on(GET_SCHOOL_GRADE, (event, id) =>
@@ -94,20 +108,22 @@ export const loadIpcHandlers = () => {
       callback: getSchoolGradeController
     })
   )
-  ipcMain.on(UPDATE_SCHOOL_GRADE, (event, payload) =>
-    handleIpcHelper({
+  ipcMain.on(UPDATE_SCHOOL_GRADE, async (event, payload) => {
+    await handleIpcHelper({
       event,
       data: payload,
       callback: updateSchoolGradeController,
       successMsg: 'Grado actualizado correctamente'
     })
-  )
-  ipcMain.on(DELETE_SCHOOL_GRADE, (event, id) =>
-    handleIpcHelper({
+    event.sender.send(UPDATE_SCHOOL_GRADE_RESPONSE)
+  })
+  ipcMain.on(DELETE_SCHOOL_GRADE, async (event, id) => {
+    await handleIpcHelper({
       event,
       data: id,
       callback: deleteSchoolGradeController,
       successMsg: 'Grado eliminado correctamente'
     })
-  )
+    event.sender.send(DELETE_SCHOOL_GRADE_RESPONSE)
+  })
 }

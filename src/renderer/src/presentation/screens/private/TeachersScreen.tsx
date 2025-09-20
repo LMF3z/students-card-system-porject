@@ -12,61 +12,62 @@ import {
   TableRow
 } from '@mui/material'
 
-import {
-  useGetSchoolGradesQuery,
-  useCreateSchoolGradeMutation,
-  useUpdateSchoolGradeMutation,
-  useDeleteSchoolGradeMutation
-} from '../../../internal/hooks/queries'
-import { Loader } from '../../components/Loader'
-import { SchoolGradesModal } from '../../components/modals/SchoolGradesModal'
-import { MaterialButton } from '../../components/buttons/MaterialButton'
-import type { SchoolGradesI } from '../../../internal/interface/grades/grades.interface'
 import { useCheckEvent, usePaginate } from '@renderer/internal/hooks'
+import {
+  useCreateTeacherMutation,
+  useDeleteTeacherMutation,
+  useGetTeachersQuery,
+  useUpdateTeacherMutation
+} from '@renderer/internal/hooks/queries'
+import { TeacherI } from '@renderer/internal/interface/teachers/teacher-interface'
+import { Loader, MaterialButton } from '@renderer/presentation/components'
+import { TeacherModal } from '@renderer/presentation/components/modals/TeacherModal'
 
-export const SchoolGradesScreen = () => {
-  const [grades, setGrades] = useState({ rows: [] as SchoolGradesI[], count: 0 })
-  const [modalMode, setModalMode] = useState<'create' | 'update'>('create')
-  const [selectedGrade, setSelectedGrade] = useState<SchoolGradesI | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+export const TeachersScreen = () => {
   const { offset, limit, page, handlePageChange, handleRowsPerPageChange } = usePaginate()
+
+  const [teachers, setTeachers] = useState({ rows: [] as TeacherI[], count: 0 })
+  const [modalMode, setModalMode] = useState<'create' | 'update'>('create')
+  const [selectedTeacher, setSelectedTeacher] = useState<TeacherI | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const {
     isPending: isGetting,
     refetch: refetchGetting,
     isRefetching: isRefetchingGetting
-  } = useGetSchoolGradesQuery(offset, limit)
+  } = useGetTeachersQuery(offset, limit)
   useCheckEvent({
-    event: 'GET_SCHOOL_GRADES_RESPONSE',
-    callback: (gradesResults: any) => {
-      if (gradesResults) {
-        setGrades(gradesResults)
+    event: 'GET_TEACHERS_RESPONSE',
+    callback: (teachersResults: any) => {
+      console.log('teachersResults -->', teachersResults)
+      if (teachersResults) {
+        setTeachers(teachersResults)
       }
     }
   })
-  const { mutate: createMutation, isPending: isCreating } = useCreateSchoolGradeMutation()
+  const { mutate: createMutation, isPending: isCreating } = useCreateTeacherMutation()
   useCheckEvent({
-    event: 'CREATE_SCHOOL_GRADE_RESPONSE',
-    callback: (data) => {
-      if (data) {
+    event: 'CREATE_TEACHER_RESPONSE',
+    callback: (teachersResults: any) => {
+      if (teachersResults) {
         refetchGetting()
       }
     }
   })
-  const { mutate: updateMutation, isPending: isUpdating } = useUpdateSchoolGradeMutation()
+  const { mutate: deleteMutation, isPending: isDeleting } = useDeleteTeacherMutation()
   useCheckEvent({
-    event: 'UPDATE_SCHOOL_GRADE_RESPONSE',
-    callback: (data) => {
-      if (data) {
+    event: 'DELETE_TEACHER_RESPONSE',
+    callback: (teachersResults: any) => {
+      if (teachersResults) {
         refetchGetting()
       }
     }
   })
-  const { mutate: deleteMutation, isPending: isDeleting } = useDeleteSchoolGradeMutation()
+  const { mutate: updateMutation, isPending: isUpdating } = useUpdateTeacherMutation()
   useCheckEvent({
-    event: 'DELETE_SCHOOL_GRADE_RESPONSE',
-    callback: (data) => {
-      if (data) {
+    event: 'UPDATE_TEACHER_RESPONSE',
+    callback: (teachersResults: any) => {
+      if (teachersResults) {
         refetchGetting()
       }
     }
@@ -74,13 +75,13 @@ export const SchoolGradesScreen = () => {
 
   const handleCreate = () => {
     setModalMode('create')
-    setSelectedGrade(null)
+    setSelectedTeacher(null)
     setIsModalOpen(true)
   }
 
-  const handleUpdate = (grade: SchoolGradesI) => {
+  const handleUpdate = (teacher: TeacherI) => {
     setModalMode('update')
-    setSelectedGrade(grade)
+    setSelectedTeacher(teacher)
     setIsModalOpen(true)
   }
 
@@ -88,11 +89,11 @@ export const SchoolGradesScreen = () => {
     deleteMutation(id)
   }
 
-  const handleModalSubmit = async (data: Partial<SchoolGradesI>) => {
+  const handleModalSubmit = async (data: Partial<TeacherI>) => {
     if (modalMode === 'create') {
-      createMutation(data as SchoolGradesI)
-    } else if (selectedGrade) {
-      updateMutation({ ...selectedGrade, ...data })
+      createMutation(data as TeacherI)
+    } else if (selectedTeacher) {
+      updateMutation({ ...selectedTeacher, ...data })
     }
   }
 
@@ -106,21 +107,21 @@ export const SchoolGradesScreen = () => {
           marginBottom: '1rem'
         }}
       >
-        <h1>Grados</h1>
+        <h1>Profesores</h1>
         <MaterialButton onClick={handleCreate} variant="contained">
           nuevo
         </MaterialButton>
       </div>
 
       <Loader
-        isLoading={isGetting || isCreating || isRefetchingGetting || isDeleting || isUpdating}
+        isLoading={isGetting || isRefetchingGetting || isCreating || isDeleting || isUpdating}
       />
 
       <TableContainer component={Paper}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {['Grado', 'Sección', 'Acciones'].map((column) => (
+              {['Nombres', 'DNI', 'Dirección', 'Celular', 'Correo', 'Acciones'].map((column) => (
                 <TableCell key={column} align="center">
                   {column}
                 </TableCell>
@@ -128,10 +129,15 @@ export const SchoolGradesScreen = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {grades?.rows?.map((row, idx) => (
+            {teachers?.rows?.map((row, idx) => (
               <TableRow key={idx}>
-                <TableCell align="center">{row.grade_title}</TableCell>
-                <TableCell align="center">{row.grade_section}</TableCell>
+                <TableCell align="center">
+                  {row.first_name} {row.first_last_name}
+                </TableCell>
+                <TableCell align="center">{row.dni}</TableCell>
+                <TableCell align="center">{row.address}</TableCell>
+                <TableCell align="center">{row.phone_number}</TableCell>
+                <TableCell align="center">{row.email}</TableCell>
                 <TableCell align="center">
                   <div className="flex justify-center gap-3">
                     <IconButton aria-label="delete" onClick={() => handleUpdate(row)}>
@@ -151,7 +157,7 @@ export const SchoolGradesScreen = () => {
       <TablePagination
         rowsPerPageOptions={[limit]}
         component="div"
-        count={grades?.count}
+        count={teachers?.count}
         rowsPerPage={limit}
         page={page}
         onPageChange={(_, page) => {
@@ -162,12 +168,12 @@ export const SchoolGradesScreen = () => {
         }}
       />
 
-      <SchoolGradesModal
+      <TeacherModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         mode={modalMode}
         onSubmit={handleModalSubmit}
-        initialData={selectedGrade || undefined}
+        initialData={selectedTeacher || undefined}
       />
     </div>
   )

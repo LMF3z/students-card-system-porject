@@ -152,18 +152,22 @@ export const AppLayout = ({ children }: { children: ReactNode }) => {
             </DrawerHeader>
 
             <List>
-              {drawerRoutes.map(({ title, link, icon: Icon }) => (
-                <Link to={link} key={title}>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <Icon />{' '}
-                      </ListItemIcon>
-                      <ListItemText primary={title} />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-              ))}
+              {drawerRoutes.map(({ title, link, icon: Icon, roles }) => {
+                if (!roles.includes(isAuth.role)) return null
+
+                return (
+                  <Link to={link} key={title}>
+                    <ListItem disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <Icon />{' '}
+                        </ListItemIcon>
+                        <ListItemText primary={title} />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                )
+              })}
             </List>
           </Drawer>
 

@@ -6,12 +6,17 @@ export const handleIpcHelper = async <T>({
   event,
   data,
   callback,
-  successMsg = ''
+  successMsg = '',
+  notifier = { send: false, nameEvent: '' }
 }: {
   event: any
   data: T
   callback: (data: T) => Promise<any | null>
   successMsg?: string
+  notifier?: {
+    send: boolean
+    nameEvent: string
+  }
 }): Promise<void> => {
   try {
     const results = await callback(data)
@@ -22,6 +27,10 @@ export const handleIpcHelper = async <T>({
       data: results,
       timestamp: new Date().toISOString()
     })
+
+    if (notifier.send && notifier.nameEvent) {
+      event.sender.send(notifier.nameEvent, results)
+    }
   } catch (error: any) {
     event.sender.send(ERROR_CHANNEL, {
       type: ERROR_CHANNEL,

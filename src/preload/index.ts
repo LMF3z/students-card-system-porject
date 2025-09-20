@@ -2,18 +2,26 @@ import { contextBridge, ipcRenderer } from 'electron'
 import {
   CREATE_SCHOOL_GRADE,
   CREATE_SCHOOL_GRADE_RESPONSE,
+  CREATE_TEACHER,
+  CREATE_TEACHER_RESPONSE,
   DELETE_SCHOOL_GRADE,
   DELETE_SCHOOL_GRADE_RESPONSE,
+  DELETE_TEACHER,
+  DELETE_TEACHER_RESPONSE,
   ERROR_CHANNEL,
   GET_ADMIN_USER,
   GET_SCHOOL_GRADES,
   GET_SCHOOL_GRADES_RESPONSE,
+  GET_TEACHERS,
+  GET_TEACHERS_RESPONSE,
   LOGIN_USER,
   LOGIN_USER_ACCESS,
   REGISTER_ADMIN_USER,
   SUCCESS_CHANNEL,
   UPDATE_SCHOOL_GRADE,
-  UPDATE_SCHOOL_GRADE_RESPONSE
+  UPDATE_SCHOOL_GRADE_RESPONSE,
+  UPDATE_TEACHER,
+  UPDATE_TEACHER_RESPONSE
 } from '../main/ipcHandlers/ipcHandlers.constants'
 // import { electronAPI } from '@electron-toolkit/preload'
 
@@ -38,6 +46,7 @@ if (process.contextIsolated) {
         })
       },
 
+      // * school grades
       CREATE_SCHOOL_GRADE: (payload: any) => {
         return ipcRenderer.send(CREATE_SCHOOL_GRADE, payload)
       },
@@ -71,6 +80,45 @@ if (process.contextIsolated) {
       DELETE_SCHOOL_GRADE_RESPONSE: (): Promise<void> => {
         return new Promise((resolve) => {
           ipcRenderer.once(DELETE_SCHOOL_GRADE_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+
+      // * teachers
+      CREATE_TEACHER: (payload: any) => {
+        return ipcRenderer.send(CREATE_TEACHER, payload)
+      },
+      CREATE_TEACHER_RESPONSE: () => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(CREATE_TEACHER_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      GET_TEACHERS: (args: any) => {
+        return ipcRenderer.send(GET_TEACHERS, args)
+      },
+      GET_TEACHERS_RESPONSE: (): Promise<any> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(GET_TEACHERS_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      // GET_TEACHER: (params: GetSchoolGradeI) => Promise<void>
+      UPDATE_TEACHER: (args: any) => {
+        return ipcRenderer.send(UPDATE_TEACHER, args)
+      },
+      UPDATE_TEACHER_RESPONSE: (args: any) => {
+        return ipcRenderer.send(UPDATE_TEACHER_RESPONSE, args)
+      },
+      DELETE_TEACHER: (id: number) => {
+        return ipcRenderer.send(DELETE_TEACHER, id)
+      },
+      DELETE_TEACHER_RESPONSE: (): Promise<void> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(DELETE_TEACHER_RESPONSE, (_, successData) => {
             resolve(successData)
           })
         })

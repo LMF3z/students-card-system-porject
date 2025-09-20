@@ -1,15 +1,23 @@
 import { ipcMain } from 'electron'
 import {
   CREATE_SCHOOL_GRADE_RESPONSE,
+  CREATE_TEACHER,
+  CREATE_TEACHER_RESPONSE,
   DELETE_SCHOOL_GRADE_RESPONSE,
+  DELETE_TEACHER,
+  DELETE_TEACHER_RESPONSE,
   ERROR_CHANNEL,
   GET_ADMIN_USER,
   GET_SCHOOL_GRADES_RESPONSE,
+  GET_TEACHERS,
+  GET_TEACHERS_RESPONSE,
   LOGIN_USER,
   LOGIN_USER_ACCESS,
   REGISTER_ADMIN_USER,
   SUCCESS_CHANNEL,
-  UPDATE_SCHOOL_GRADE_RESPONSE
+  UPDATE_SCHOOL_GRADE_RESPONSE,
+  UPDATE_TEACHER,
+  UPDATE_TEACHER_RESPONSE
 } from './ipcHandlers.constants.js'
 
 import {
@@ -34,6 +42,12 @@ import {
   UPDATE_SCHOOL_GRADE,
   DELETE_SCHOOL_GRADE
 } from './ipcHandlers.constants.js'
+import {
+  createTeacherController,
+  deleteTeacherController,
+  getTeachersController,
+  updateTeacherController
+} from '../controllers/teacher/teacher-controllers.js'
 
 export const loadIpcHandlers = () => {
   ipcMain.handle(GET_ADMIN_USER, getIfExistAdminController)
@@ -125,5 +139,54 @@ export const loadIpcHandlers = () => {
       successMsg: 'Grado eliminado correctamente'
     })
     event.sender.send(DELETE_SCHOOL_GRADE_RESPONSE)
+  })
+
+  // teachers
+  ipcMain.on(CREATE_TEACHER, async (event, payload) => {
+    await handleIpcHelper({
+      event,
+      data: payload,
+      callback: createTeacherController,
+      successMsg: 'Profesor creado correctamente',
+      notifier: {
+        send: true,
+        nameEvent: CREATE_TEACHER_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(GET_TEACHERS, async (event, params) => {
+    await handleIpcHelper({
+      event,
+      data: params,
+      callback: getTeachersController,
+      notifier: {
+        send: true,
+        nameEvent: GET_TEACHERS_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(UPDATE_TEACHER, async (event, payload) => {
+    await handleIpcHelper({
+      event,
+      data: payload,
+      callback: updateTeacherController,
+      successMsg: 'Profesor actualizado correctamente',
+      notifier: {
+        send: true,
+        nameEvent: UPDATE_TEACHER_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(DELETE_TEACHER, async (event, id) => {
+    await handleIpcHelper({
+      event,
+      data: id,
+      callback: deleteTeacherController,
+      successMsg: 'Profesor eliminado correctamente',
+      notifier: {
+        send: true,
+        nameEvent: DELETE_TEACHER_RESPONSE
+      }
+    })
   })
 }

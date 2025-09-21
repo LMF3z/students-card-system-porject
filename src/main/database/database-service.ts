@@ -1,5 +1,10 @@
 import { Sequelize } from 'sequelize'
-import { loadUserModel, loadGradesModel, loadTeacherModel } from '../models/index.js'
+import {
+  loadUserModel,
+  loadGradesModel,
+  loadTeacherModel,
+  loadStudentModel
+} from '../models/index.js'
 
 export class Connection {
   static sequelize: Sequelize
@@ -18,6 +23,7 @@ export class Connection {
       loadUserModel(this.sequelize)
       loadGradesModel(this.sequelize)
       loadTeacherModel(this.sequelize)
+      loadStudentModel(this.sequelize)
 
       await this.sequelize.sync()
 

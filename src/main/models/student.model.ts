@@ -1,8 +1,8 @@
 import { DataTypes, Model, Sequelize } from 'sequelize'
-import { TeacherI } from '../interfaces/teachers/teacher-interface'
-import { UserRoles } from '../interfaces/user/user.interface'
 
-export class TeacherModel extends Model<TeacherI> implements TeacherI {
+import { StudentI } from '../interfaces/studens/student.interface'
+
+export class StudentModel extends Model<StudentI> implements StudentI {
   id!: number
   first_name!: string
   second_name!: string
@@ -11,18 +11,16 @@ export class TeacherModel extends Model<TeacherI> implements TeacherI {
   dni!: string
   address!: string
   phone_number!: string
-  email!: string
-  password!: string
+  photo?: string
   register_by!: number
-  role!: UserRoles.TEACHER
 
   createdAt?: Date
   updatedAt?: Date
   deletedAt?: Date
 }
 
-export const loadTeacherModel = (se: Sequelize) => {
-  TeacherModel.init(
+export const loadStudentModel = (sequelize: Sequelize) => {
+  StudentModel.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -60,30 +58,21 @@ export const loadTeacherModel = (se: Sequelize) => {
         type: DataTypes.STRING,
         allowNull: false
       },
-      email: {
+      photo: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: null
       },
       register_by: {
         type: DataTypes.INTEGER,
         allowNull: false
-      },
-      role: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: UserRoles.TEACHER
       }
     },
     {
-      tableName: 'teachers',
+      tableName: 'students',
       timestamps: true,
       paranoid: true,
-      sequelize: se
+      sequelize: sequelize
     }
   )
 }

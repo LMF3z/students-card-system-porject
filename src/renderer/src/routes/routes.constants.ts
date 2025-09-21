@@ -1,5 +1,5 @@
 import { ForwardRefExoticComponent, RefAttributes } from 'react'
-import { LucideProps, HomeIcon, BookOpenText, Users } from 'lucide-react'
+import { LucideProps, HomeIcon, BookOpenText, Users, Users2 } from 'lucide-react'
 import { UserRoles } from '@renderer/internal/interface'
 
 export const router = {
@@ -7,7 +7,8 @@ export const router = {
   registerScreen: '/register',
   homeScreen: '/home',
   teachersScreen: '/teachers',
-  schoolGradesScreen: '/school-grades'
+  schoolGradesScreen: '/school-grades',
+  studentsScreen: '/students'
 }
 
 export interface SideBarsItemI {
@@ -37,6 +38,12 @@ export const drawerRoutes: SideBarsItemI[] = [
     title: 'Grados',
     link: router.schoolGradesScreen,
     icon: BookOpenText,
+    roles: [UserRoles.SUPER_ADMIN, UserRoles.ADMIN, UserRoles.TEACHER]
+  },
+  {
+    title: 'Estudiantes',
+    link: router.studentsScreen,
+    icon: Users2,
     roles: [UserRoles.SUPER_ADMIN, UserRoles.ADMIN, UserRoles.TEACHER]
   }
 ]

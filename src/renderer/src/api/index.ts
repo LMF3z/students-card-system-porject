@@ -1,1 +1,4 @@
-export * from './auth/auth.api';
+export * from './auth/auth.api'
+export * from './school-grades/school-grades.api'
+export * from './teachers/teachers.api'
+export * from './students/students.api'

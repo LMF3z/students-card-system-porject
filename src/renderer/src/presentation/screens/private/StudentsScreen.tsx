@@ -14,58 +14,58 @@ import {
 
 import { useCheckEvent, usePaginate } from '@renderer/internal/hooks'
 import {
-  useCreateTeacherMutation,
-  useDeleteTeacherMutation,
-  useGetTeachersQuery,
-  useUpdateTeacherMutation
+  useCreateStudentMutation,
+  useDeleteStudentMutation,
+  useGetStudentsQuery,
+  useUpdateStudentMutation
 } from '@renderer/internal/hooks/queries'
-import { TeacherI } from '@renderer/internal/interface'
-import { Loader, MaterialButton, TeacherModal } from '@renderer/presentation/components'
+import { StudentI } from '@renderer/internal/interface'
+import { Loader, MaterialButton, StudentModal } from '@renderer/presentation/components'
 
-export const TeachersScreen = () => {
+export const StudentsScreen = () => {
   const { offset, limit, page, handlePageChange, handleRowsPerPageChange } = usePaginate()
 
-  const [teachers, setTeachers] = useState({ rows: [] as TeacherI[], count: 0 })
+  const [students, setStudents] = useState({ rows: [] as StudentI[], count: 0 })
   const [modalMode, setModalMode] = useState<'create' | 'update'>('create')
-  const [selectedTeacher, setSelectedTeacher] = useState<TeacherI | null>(null)
+  const [selectedStudent, setSelectedStudent] = useState<StudentI | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const {
     isPending: isGetting,
     refetch: refetchGetting,
     isRefetching: isRefetchingGetting
-  } = useGetTeachersQuery(offset, limit)
+  } = useGetStudentsQuery(offset, limit)
   useCheckEvent({
-    event: 'GET_TEACHERS_RESPONSE',
-    callback: (teachersResults: any) => {
-      if (teachersResults) {
-        setTeachers(teachersResults)
+    event: 'GET_STUDENTS_RESPONSE',
+    callback: (studentsResults: any) => {
+      if (studentsResults) {
+        setStudents(studentsResults)
       }
     }
   })
-  const { mutate: createMutation, isPending: isCreating } = useCreateTeacherMutation()
+  const { mutate: createMutation, isPending: isCreating } = useCreateStudentMutation()
   useCheckEvent({
-    event: 'CREATE_TEACHER_RESPONSE',
-    callback: (teachersResults: any) => {
-      if (teachersResults) {
+    event: 'CREATE_STUDENT_RESPONSE',
+    callback: (studentsResults: any) => {
+      if (studentsResults) {
         refetchGetting()
       }
     }
   })
-  const { mutate: deleteMutation, isPending: isDeleting } = useDeleteTeacherMutation()
+  const { mutate: deleteMutation, isPending: isDeleting } = useDeleteStudentMutation()
   useCheckEvent({
-    event: 'DELETE_TEACHER_RESPONSE',
-    callback: (teachersResults: any) => {
-      if (teachersResults) {
+    event: 'DELETE_STUDENT_RESPONSE',
+    callback: (studentsResults: any) => {
+      if (studentsResults) {
         refetchGetting()
       }
     }
   })
-  const { mutate: updateMutation, isPending: isUpdating } = useUpdateTeacherMutation()
+  const { mutate: updateMutation, isPending: isUpdating } = useUpdateStudentMutation()
   useCheckEvent({
-    event: 'UPDATE_TEACHER_RESPONSE',
-    callback: (teachersResults: any) => {
-      if (teachersResults) {
+    event: 'UPDATE_STUDENT_RESPONSE',
+    callback: (studentsResults: any) => {
+      if (studentsResults) {
         refetchGetting()
       }
     }
@@ -73,13 +73,13 @@ export const TeachersScreen = () => {
 
   const handleCreate = () => {
     setModalMode('create')
-    setSelectedTeacher(null)
+    setSelectedStudent(null)
     setIsModalOpen(true)
   }
 
-  const handleUpdate = (teacher: TeacherI) => {
+  const handleUpdate = (student: StudentI) => {
     setModalMode('update')
-    setSelectedTeacher(teacher)
+    setSelectedStudent(student)
     setIsModalOpen(true)
   }
 
@@ -87,11 +87,11 @@ export const TeachersScreen = () => {
     deleteMutation(id)
   }
 
-  const handleModalSubmit = async (data: Partial<TeacherI>) => {
+  const handleModalSubmit = async (data: Partial<StudentI>) => {
     if (modalMode === 'create') {
-      createMutation(data as TeacherI)
-    } else if (selectedTeacher) {
-      updateMutation({ ...selectedTeacher, ...data })
+      createMutation(data as StudentI)
+    } else if (selectedStudent) {
+      updateMutation({ ...selectedStudent, ...data })
     }
   }
 
@@ -105,7 +105,7 @@ export const TeachersScreen = () => {
           marginBottom: '1rem'
         }}
       >
-        <h1>Profesores</h1>
+        <h1>Estudiantes</h1>
         <MaterialButton onClick={handleCreate} variant="contained">
           nuevo
         </MaterialButton>
@@ -119,7 +119,7 @@ export const TeachersScreen = () => {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {['Nombres', 'DNI', 'Dirección', 'Celular', 'Correo', 'Acciones'].map((column) => (
+              {['Nombres', 'DNI', 'Dirección', 'Celular', 'Acciones'].map((column) => (
                 <TableCell key={column} align="center">
                   {column}
                 </TableCell>
@@ -127,7 +127,7 @@ export const TeachersScreen = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {teachers?.rows?.map((row, idx) => (
+            {students?.rows?.map((row, idx) => (
               <TableRow key={idx}>
                 <TableCell align="center">
                   {row.first_name} {row.first_last_name}
@@ -135,7 +135,6 @@ export const TeachersScreen = () => {
                 <TableCell align="center">{row.dni}</TableCell>
                 <TableCell align="center">{row.address}</TableCell>
                 <TableCell align="center">{row.phone_number}</TableCell>
-                <TableCell align="center">{row.email}</TableCell>
                 <TableCell align="center">
                   <div className="flex justify-center gap-3">
                     <IconButton aria-label="delete" onClick={() => handleUpdate(row)}>
@@ -155,7 +154,7 @@ export const TeachersScreen = () => {
       <TablePagination
         rowsPerPageOptions={[limit]}
         component="div"
-        count={teachers?.count}
+        count={students?.count}
         rowsPerPage={limit}
         page={page}
         onPageChange={(_, page) => {
@@ -166,12 +165,12 @@ export const TeachersScreen = () => {
         }}
       />
 
-      <TeacherModal
+      <StudentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         mode={modalMode}
         onSubmit={handleModalSubmit}
-        initialData={selectedTeacher || undefined}
+        initialData={selectedStudent || undefined}
       />
     </div>
   )

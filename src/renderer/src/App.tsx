@@ -8,6 +8,7 @@ import {
   LoginScreen,
   RegisterScreen,
   SchoolGradesScreen,
+  StudentsScreen,
   TeachersScreen
 } from './presentation/screens'
 import { ElectronSuccessAndErrorContextProvider } from './internal/hooks'
@@ -28,6 +29,7 @@ function App() {
                 <Route path={router.homeScreen} element={<HomeScreen />} />
                 <Route path={router.teachersScreen} element={<TeachersScreen />} />
                 <Route path={router.schoolGradesScreen} element={<SchoolGradesScreen />} />
+                <Route path={router.studentsScreen} element={<StudentsScreen />} />
               </Route>
 
               <Route path="*" element={<LoginScreen />} />

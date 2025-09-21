@@ -30,6 +30,15 @@ declare global {
       DELETE_TEACHER: (id: number) => Promise<void>
       DELETE_TEACHER_RESPONSE: () => Promise<void>
 
+      CREATE_STUDENT: (payload: StudentI) => Promise<void>
+      CREATE_STUDENT_RESPONSE: () => Promise<StudentI>
+      GET_STUDENTS: (params: { offset?: number; limit?: number }) => Promise<void>
+      GET_STUDENTS_RESPONSE: () => Promise<{ rows: StudentI[]; count: number }>
+      UPDATE_STUDENT: (params: StudentI) => Promise<void>
+      UPDATE_STUDENT_RESPONSE: () => Promise<void>
+      DELETE_STUDENT: (id: number) => Promise<void>
+      DELETE_STUDENT_RESPONSE: () => Promise<void>
+
       onSuccessCreate: (callback: (data: T) => void) => T
       onError: (callback: (error: any) => void) => void
       removeErrorListener: () => void

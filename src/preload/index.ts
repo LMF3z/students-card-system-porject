@@ -2,16 +2,22 @@ import { contextBridge, ipcRenderer } from 'electron'
 import {
   CREATE_SCHOOL_GRADE,
   CREATE_SCHOOL_GRADE_RESPONSE,
+  CREATE_STUDENT,
+  CREATE_STUDENT_RESPONSE,
   CREATE_TEACHER,
   CREATE_TEACHER_RESPONSE,
   DELETE_SCHOOL_GRADE,
   DELETE_SCHOOL_GRADE_RESPONSE,
+  DELETE_STUDENT,
+  DELETE_STUDENT_RESPONSE,
   DELETE_TEACHER,
   DELETE_TEACHER_RESPONSE,
   ERROR_CHANNEL,
   GET_ADMIN_USER,
   GET_SCHOOL_GRADES,
   GET_SCHOOL_GRADES_RESPONSE,
+  GET_STUDENTS,
+  GET_STUDENTS_RESPONSE,
   GET_TEACHERS,
   GET_TEACHERS_RESPONSE,
   LOGIN_USER,
@@ -20,6 +26,8 @@ import {
   SUCCESS_CHANNEL,
   UPDATE_SCHOOL_GRADE,
   UPDATE_SCHOOL_GRADE_RESPONSE,
+  UPDATE_STUDENT,
+  UPDATE_STUDENT_RESPONSE,
   UPDATE_TEACHER,
   UPDATE_TEACHER_RESPONSE
 } from '../main/ipcHandlers/ipcHandlers.constants'
@@ -106,7 +114,6 @@ if (process.contextIsolated) {
           })
         })
       },
-      // GET_TEACHER: (params: GetSchoolGradeI) => Promise<void>
       UPDATE_TEACHER: (args: any) => {
         return ipcRenderer.send(UPDATE_TEACHER, args)
       },
@@ -119,6 +126,44 @@ if (process.contextIsolated) {
       DELETE_TEACHER_RESPONSE: (): Promise<void> => {
         return new Promise((resolve) => {
           ipcRenderer.once(DELETE_TEACHER_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+
+      // * students
+      CREATE_STUDENT: (payload: any) => {
+        return ipcRenderer.send(CREATE_STUDENT, payload)
+      },
+      CREATE_STUDENT_RESPONSE: () => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(CREATE_STUDENT_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      GET_STUDENTS: (args: any) => {
+        return ipcRenderer.send(GET_STUDENTS, args)
+      },
+      GET_STUDENTS_RESPONSE: (): Promise<any> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(GET_STUDENTS_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      UPDATE_STUDENT: (args: any) => {
+        return ipcRenderer.send(UPDATE_STUDENT, args)
+      },
+      UPDATE_STUDENT_RESPONSE: (args: any) => {
+        return ipcRenderer.send(UPDATE_STUDENT_RESPONSE, args)
+      },
+      DELETE_STUDENT: (id: number) => {
+        return ipcRenderer.send(DELETE_STUDENT, id)
+      },
+      DELETE_STUDENT_RESPONSE: (): Promise<void> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(DELETE_STUDENT_RESPONSE, (_, successData) => {
             resolve(successData)
           })
         })

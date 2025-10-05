@@ -1,11 +1,15 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import {
+  CREATE_ENROLLMENT,
+  CREATE_ENROLLMENT_RESPONSE,
   CREATE_SCHOOL_GRADE,
   CREATE_SCHOOL_GRADE_RESPONSE,
   CREATE_STUDENT,
   CREATE_STUDENT_RESPONSE,
   CREATE_TEACHER,
   CREATE_TEACHER_RESPONSE,
+  DELETE_ENROLLMENT,
+  DELETE_ENROLLMENT_RESPONSE,
   DELETE_SCHOOL_GRADE,
   DELETE_SCHOOL_GRADE_RESPONSE,
   DELETE_STUDENT,
@@ -14,6 +18,8 @@ import {
   DELETE_TEACHER_RESPONSE,
   ERROR_CHANNEL,
   GET_ADMIN_USER,
+  GET_ENROLLMENTS,
+  GET_ENROLLMENTS_RESPONSE,
   GET_SCHOOL_GRADES,
   GET_SCHOOL_GRADES_RESPONSE,
   GET_STUDENTS,
@@ -24,6 +30,8 @@ import {
   LOGIN_USER_ACCESS,
   REGISTER_ADMIN_USER,
   SUCCESS_CHANNEL,
+  UPDATE_ENROLLMENT,
+  UPDATE_ENROLLMENT_RESPONSE,
   UPDATE_SCHOOL_GRADE,
   UPDATE_SCHOOL_GRADE_RESPONSE,
   UPDATE_STUDENT,
@@ -164,6 +172,44 @@ if (process.contextIsolated) {
       DELETE_STUDENT_RESPONSE: (): Promise<void> => {
         return new Promise((resolve) => {
           ipcRenderer.once(DELETE_STUDENT_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+
+      // * enrollment
+      CREATE_ENROLLMENT: (payload: any) => {
+        return ipcRenderer.send(CREATE_ENROLLMENT, payload)
+      },
+      CREATE_ENROLLMENT_RESPONSE: () => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(CREATE_ENROLLMENT_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      GET_ENROLLMENTS: (args: any) => {
+        return ipcRenderer.send(GET_ENROLLMENTS, args)
+      },
+      GET_ENROLLMENTS_RESPONSE: (): Promise<any> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(GET_ENROLLMENTS_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      UPDATE_ENROLLMENT: (args: any) => {
+        return ipcRenderer.send(UPDATE_ENROLLMENT, args)
+      },
+      UPDATE_ENROLLMENT_RESPONSE: (args: any) => {
+        return ipcRenderer.send(UPDATE_ENROLLMENT_RESPONSE, args)
+      },
+      DELETE_ENROLLMENT: (id: number) => {
+        return ipcRenderer.send(DELETE_ENROLLMENT, id)
+      },
+      DELETE_ENROLLMENT_RESPONSE: (): Promise<void> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(DELETE_ENROLLMENT_RESPONSE, (_, successData) => {
             resolve(successData)
           })
         })

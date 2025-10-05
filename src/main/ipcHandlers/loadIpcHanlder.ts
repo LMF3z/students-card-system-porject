@@ -1,10 +1,14 @@
 import { ipcMain } from 'electron'
 import {
+  CREATE_ENROLLMENT,
+  CREATE_ENROLLMENT_RESPONSE,
   CREATE_SCHOOL_GRADE_RESPONSE,
   CREATE_STUDENT,
   CREATE_STUDENT_RESPONSE,
   CREATE_TEACHER,
   CREATE_TEACHER_RESPONSE,
+  DELETE_ENROLLMENT,
+  DELETE_ENROLLMENT_RESPONSE,
   DELETE_SCHOOL_GRADE_RESPONSE,
   DELETE_STUDENT,
   DELETE_STUDENT_RESPONSE,
@@ -12,6 +16,8 @@ import {
   DELETE_TEACHER_RESPONSE,
   ERROR_CHANNEL,
   GET_ADMIN_USER,
+  GET_ENROLLMENTS,
+  GET_ENROLLMENTS_RESPONSE,
   GET_SCHOOL_GRADES_RESPONSE,
   GET_STUDENTS,
   GET_STUDENTS_RESPONSE,
@@ -21,6 +27,8 @@ import {
   LOGIN_USER_ACCESS,
   REGISTER_ADMIN_USER,
   SUCCESS_CHANNEL,
+  UPDATE_ENROLLMENT,
+  UPDATE_ENROLLMENT_RESPONSE,
   UPDATE_SCHOOL_GRADE_RESPONSE,
   UPDATE_STUDENT,
   UPDATE_STUDENT_RESPONSE,
@@ -62,6 +70,12 @@ import {
   getStudentsController,
   updateStudentController
 } from '../controllers/student/student-controllers.js'
+import {
+  createEnrollmentController,
+  deleteEnrollmentController,
+  getEnrollmentsController,
+  updateEnrollmentController
+} from '../controllers/enrollment/enrollment.controller.js'
 
 export const loadIpcHandlers = () => {
   ipcMain.handle(GET_ADMIN_USER, getIfExistAdminController)
@@ -249,6 +263,55 @@ export const loadIpcHandlers = () => {
       notifier: {
         send: true,
         nameEvent: DELETE_STUDENT_RESPONSE
+      }
+    })
+  })
+
+  // enrollment
+  ipcMain.on(CREATE_ENROLLMENT, async (event, payload) => {
+    await handleIpcHelper({
+      event,
+      data: payload,
+      callback: createEnrollmentController,
+      successMsg: 'Inscripción creada correctamente',
+      notifier: {
+        send: true,
+        nameEvent: CREATE_ENROLLMENT_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(GET_ENROLLMENTS, async (event, params) => {
+    await handleIpcHelper({
+      event,
+      data: params,
+      callback: getEnrollmentsController,
+      notifier: {
+        send: true,
+        nameEvent: GET_ENROLLMENTS_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(UPDATE_ENROLLMENT, async (event, payload) => {
+    await handleIpcHelper({
+      event,
+      data: payload,
+      callback: updateEnrollmentController,
+      successMsg: 'Inscripción actualizada correctamente',
+      notifier: {
+        send: true,
+        nameEvent: UPDATE_ENROLLMENT_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(DELETE_ENROLLMENT, async (event, id) => {
+    await handleIpcHelper({
+      event,
+      data: id,
+      callback: deleteEnrollmentController,
+      successMsg: 'Inscripción eliminada correctamente',
+      notifier: {
+        send: true,
+        nameEvent: DELETE_ENROLLMENT_RESPONSE
       }
     })
   })

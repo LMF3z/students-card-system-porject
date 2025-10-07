@@ -39,6 +39,15 @@ declare global {
       DELETE_STUDENT: (id: number) => Promise<void>
       DELETE_STUDENT_RESPONSE: () => Promise<void>
 
+      CREATE_ENROLLMENT: (payload: EnrollmentI) => Promise<void>
+      CREATE_ENROLLMENT_RESPONSE: () => Promise<EnrollmentI>
+      GET_ENROLLMENTS: (params: { offset?: number; limit?: number }) => Promise<void>
+      GET_ENROLLMENTS_RESPONSE: () => Promise<{ rows: EnrollmentI[]; count: number }>
+      UPDATE_ENROLLMENT: (params: EnrollmentI) => Promise<void>
+      UPDATE_ENROLLMENT_RESPONSE: () => Promise<void>
+      DELETE_ENROLLMENT: (id: number) => Promise<void>
+      DELETE_ENROLLMENT_RESPONSE: () => Promise<void>
+
       onSuccessCreate: (callback: (data: T) => void) => T
       onError: (callback: (error: any) => void) => void
       removeErrorListener: () => void

@@ -1,5 +1,6 @@
 export * from './inputs/MaterialInput'
 export * from './buttons/MaterialButton'
+export * from './selects/MaterialSelect'
 export * from './Loader'
 export * from './modals/SchoolGradesModal'
 export * from './modals/TeacherModal'

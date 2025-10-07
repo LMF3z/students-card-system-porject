@@ -35,6 +35,7 @@
     "jsonwebtoken": "9.0.2",
     "lucide-react": "0.544.0",
     "mysql2": "3.14.5",
+    "node-html-to-image": "5.0.0",
     "react-hook-form": "7.62.0",
     "react-hot-toast": "2.6.0",
     "react-router-dom": "7.9.1",

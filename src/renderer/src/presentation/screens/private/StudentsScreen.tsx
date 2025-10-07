@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FilePenLine, Trash2 } from 'lucide-react'
+import { FilePenLine, IdCard, Trash2 } from 'lucide-react'
 import {
   IconButton,
   Paper,
@@ -20,7 +20,12 @@ import {
   useUpdateStudentMutation
 } from '@renderer/internal/hooks/queries'
 import { StudentI } from '@renderer/internal/interface'
-import { Loader, MaterialButton, StudentModal } from '@renderer/presentation/components'
+import {
+  Loader,
+  MaterialButton,
+  StudentCardModal,
+  StudentModal
+} from '@renderer/presentation/components'
 
 export const StudentsScreen = () => {
   const { offset, limit, page, handlePageChange, handleRowsPerPageChange } = usePaginate()
@@ -29,6 +34,7 @@ export const StudentsScreen = () => {
   const [modalMode, setModalMode] = useState<'create' | 'update'>('create')
   const [selectedStudent, setSelectedStudent] = useState<StudentI | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCardModalOpen, setIsCardModalOpen] = useState(false)
 
   const {
     isPending: isGetting,
@@ -137,6 +143,16 @@ export const StudentsScreen = () => {
                 <TableCell align="center">{row.phone_number}</TableCell>
                 <TableCell align="center">
                   <div className="flex justify-center gap-3">
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => {
+                        setSelectedStudent(row)
+                        setIsCardModalOpen(true)
+                      }}
+                    >
+                      <IdCard className="text-green-500" />
+                    </IconButton>
+
                     <IconButton aria-label="delete" onClick={() => handleUpdate(row)}>
                       <FilePenLine className="text-blue-500" />
                     </IconButton>
@@ -171,6 +187,15 @@ export const StudentsScreen = () => {
         mode={modalMode}
         onSubmit={handleModalSubmit}
         initialData={selectedStudent || undefined}
+      />
+
+      <StudentCardModal
+        student={selectedStudent!}
+        isOpen={isCardModalOpen}
+        onClose={() => {
+          setIsCardModalOpen(false)
+          setSelectedStudent(null)
+        }}
       />
     </div>
   )

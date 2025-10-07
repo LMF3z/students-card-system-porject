@@ -5,6 +5,7 @@ export * from './Loader'
 export * from './modals/SchoolGradesModal'
 export * from './modals/TeacherModal'
 export * from './modals/StudentModal'
+export * from './modals/StudentCardModal'
 
 export * from './PublicRoute'
 export * from './PrivateRoute'

@@ -25,7 +25,7 @@ export const StudentCardModal = ({ student, isOpen, onClose }: Props) => {
         {/* Header Section */}
         <div className="bg-primary px-6 py-4">
           <div className="flex items-center justify-between">
-            <img src={'./logo.jpg'} alt="Logo" className="h-12 w-auto object-contain" />
+            <img src={'./school-logo.jpeg'} alt="Logo" className="h-12 w-auto object-contain" />
             <div className="text-right">
               <h2 className="text-primary-foreground font-bold text-lg leading-tight">
                 {'UNIVERSIDAD NACIONAL DE CAJAMARCA'}

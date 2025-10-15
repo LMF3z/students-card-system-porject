@@ -2,6 +2,8 @@ import { contextBridge, ipcRenderer } from 'electron'
 import {
   CREATE_ENROLLMENT,
   CREATE_ENROLLMENT_RESPONSE,
+  CREATE_REPRESENTATIVE,
+  CREATE_REPRESENTATIVE_RESPONSE,
   CREATE_SCHOOL_GRADE,
   CREATE_SCHOOL_GRADE_RESPONSE,
   CREATE_STUDENT,
@@ -10,6 +12,8 @@ import {
   CREATE_TEACHER_RESPONSE,
   DELETE_ENROLLMENT,
   DELETE_ENROLLMENT_RESPONSE,
+  DELETE_REPRESENTATIVE,
+  DELETE_REPRESENTATIVE_RESPONSE,
   DELETE_SCHOOL_GRADE,
   DELETE_SCHOOL_GRADE_RESPONSE,
   DELETE_STUDENT,
@@ -20,6 +24,8 @@ import {
   GET_ADMIN_USER,
   GET_ENROLLMENTS,
   GET_ENROLLMENTS_RESPONSE,
+  GET_REPRESENTATIVES,
+  GET_REPRESENTATIVES_RESPONSE,
   GET_SCHOOL_GRADES,
   GET_SCHOOL_GRADES_RESPONSE,
   GET_STUDENTS,
@@ -32,6 +38,8 @@ import {
   SUCCESS_CHANNEL,
   UPDATE_ENROLLMENT,
   UPDATE_ENROLLMENT_RESPONSE,
+  UPDATE_REPRESENTATIVE,
+  UPDATE_REPRESENTATIVE_RESPONSE,
   UPDATE_SCHOOL_GRADE,
   UPDATE_SCHOOL_GRADE_RESPONSE,
   UPDATE_STUDENT,
@@ -134,6 +142,44 @@ if (process.contextIsolated) {
       DELETE_TEACHER_RESPONSE: (): Promise<void> => {
         return new Promise((resolve) => {
           ipcRenderer.once(DELETE_TEACHER_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+
+      // * representatives
+      CREATE_REPRESENTATIVE: (payload: any) => {
+        return ipcRenderer.send(CREATE_REPRESENTATIVE, payload)
+      },
+      CREATE_REPRESENTATIVE_RESPONSE: () => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(CREATE_REPRESENTATIVE_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      GET_REPRESENTATIVES: (args: any) => {
+        return ipcRenderer.send(GET_REPRESENTATIVES, args)
+      },
+      GET_REPRESENTATIVES_RESPONSE: (): Promise<any> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(GET_REPRESENTATIVES_RESPONSE, (_, successData) => {
+            resolve(successData)
+          })
+        })
+      },
+      UPDATE_REPRESENTATIVE: (args: any) => {
+        return ipcRenderer.send(UPDATE_REPRESENTATIVE, args)
+      },
+      UPDATE_REPRESENTATIVE_RESPONSE: (args: any) => {
+        return ipcRenderer.send(UPDATE_REPRESENTATIVE_RESPONSE, args)
+      },
+      DELETE_REPRESENTATIVE: (id: number) => {
+        return ipcRenderer.send(DELETE_REPRESENTATIVE, id)
+      },
+      DELETE_REPRESENTATIVE_RESPONSE: (): Promise<void> => {
+        return new Promise((resolve) => {
+          ipcRenderer.once(DELETE_REPRESENTATIVE_RESPONSE, (_, successData) => {
             resolve(successData)
           })
         })

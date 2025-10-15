@@ -30,6 +30,15 @@ declare global {
       DELETE_TEACHER: (id: number) => Promise<void>
       DELETE_TEACHER_RESPONSE: () => Promise<void>
 
+      CREATE_REPRESENTATIVE: (payload: RepresentativeI) => Promise<void>
+      CREATE_REPRESENTATIVE_RESPONSE: () => Promise<RepresentativeI>
+      GET_REPRESENTATIVES: (params: { offset?: number; limit?: number }) => Promise<void>
+      GET_REPRESENTATIVES_RESPONSE: () => Promise<{ rows: RepresentativeI[]; count: number }>
+      UPDATE_REPRESENTATIVE: (params: RepresentativeI) => Promise<void>
+      UPDATE_REPRESENTATIVE_RESPONSE: () => Promise<void>
+      DELETE_REPRESENTATIVE: (id: number) => Promise<void>
+      DELETE_REPRESENTATIVE_RESPONSE: () => Promise<void>
+
       CREATE_STUDENT: (payload: StudentI) => Promise<void>
       CREATE_STUDENT_RESPONSE: () => Promise<StudentI>
       GET_STUDENTS: (params: { offset?: number; limit?: number }) => Promise<void>

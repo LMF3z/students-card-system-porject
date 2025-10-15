@@ -35,6 +35,17 @@ import {
   UPDATE_TEACHER,
   UPDATE_TEACHER_RESPONSE
 } from './ipcHandlers.constants.js'
+import {
+  CREATE_REPRESENTATIVE,
+  CREATE_REPRESENTATIVE_RESPONSE,
+  GET_REPRESENTATIVE,
+  GET_REPRESENTATIVES,
+  GET_REPRESENTATIVES_RESPONSE,
+  UPDATE_REPRESENTATIVE,
+  UPDATE_REPRESENTATIVE_RESPONSE,
+  DELETE_REPRESENTATIVE,
+  DELETE_REPRESENTATIVE_RESPONSE
+} from './ipcHandlers.constants.js'
 
 import {
   getIfExistAdminController,
@@ -76,6 +87,13 @@ import {
   getEnrollmentsController,
   updateEnrollmentController
 } from '../controllers/enrollment/enrollment.controller.js'
+import {
+  createRepresentativeController,
+  deleteRepresentativeController,
+  getRepresentativesController,
+  updateRepresentativeController,
+  getRepresentativeController
+} from '../controllers/representative/representative.controller.js'
 
 export const loadIpcHandlers = () => {
   ipcMain.handle(GET_ADMIN_USER, getIfExistAdminController)
@@ -315,4 +333,61 @@ export const loadIpcHandlers = () => {
       }
     })
   })
+
+  // representatives
+  ipcMain.on(CREATE_REPRESENTATIVE, async (event, payload) => {
+    await handleIpcHelper({
+      event,
+      data: payload,
+      callback: createRepresentativeController,
+      successMsg: 'Representante creado correctamente',
+      notifier: {
+        send: true,
+        nameEvent: CREATE_REPRESENTATIVE_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(GET_REPRESENTATIVES, async (event, params) => {
+    await handleIpcHelper({
+      event,
+      data: params,
+      callback: getRepresentativesController,
+      notifier: {
+        send: true,
+        nameEvent: GET_REPRESENTATIVES_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(UPDATE_REPRESENTATIVE, async (event, payload) => {
+    await handleIpcHelper({
+      event,
+      data: payload,
+      callback: updateRepresentativeController,
+      successMsg: 'Representante actualizado correctamente',
+      notifier: {
+        send: true,
+        nameEvent: UPDATE_REPRESENTATIVE_RESPONSE
+      }
+    })
+  })
+  ipcMain.on(DELETE_REPRESENTATIVE, async (event, id) => {
+    await handleIpcHelper({
+      event,
+      data: id,
+      callback: deleteRepresentativeController,
+      successMsg: 'Representante eliminado correctamente',
+      notifier: {
+        send: true,
+        nameEvent: DELETE_REPRESENTATIVE_RESPONSE
+      }
+    })
+  })
+
+  ipcMain.on(GET_REPRESENTATIVE, (event, id) =>
+    handleIpcHelper({
+      event,
+      data: id,
+      callback: getRepresentativeController
+    })
+  )
 }

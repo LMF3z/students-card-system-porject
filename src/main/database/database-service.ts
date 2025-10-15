@@ -4,7 +4,8 @@ import {
   loadGradesModel,
   loadTeacherModel,
   loadStudentModel,
-  loadEnrollmentModel
+  loadEnrollmentModel,
+  loadRepresentativeModel
 } from '../models/index.js'
 
 export class Connection {
@@ -25,6 +26,7 @@ export class Connection {
       loadGradesModel(this.sequelize)
       loadTeacherModel(this.sequelize)
       loadStudentModel(this.sequelize)
+      loadRepresentativeModel(this.sequelize)
       loadEnrollmentModel(this.sequelize)
 
       await this.sequelize.sync()

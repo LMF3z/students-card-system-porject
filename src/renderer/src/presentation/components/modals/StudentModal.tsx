@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Modal } from '@mui/material'
 import { StudentSchema, StudentSchemaT } from '@renderer/validations'
+import { useGetRepresentativesQuery } from '@renderer/internal/hooks/queries'
 
-import { StudentI } from '@renderer/internal/interface'
+import { RepresentativeI, StudentI } from '@renderer/internal/interface'
 import { MaterialInput } from '../inputs/MaterialInput'
 import { MaterialButton } from '../buttons/MaterialButton'
+import { MaterialSelect } from '../selects/MaterialSelect'
+import { useCheckEvent } from '@renderer/internal/hooks'
 
 interface StudentModalProps {
   isOpen: boolean
@@ -24,14 +28,29 @@ export const StudentModal = ({
   onSubmit
 }: StudentModalProps) => {
   const [loading, setLoading] = useState(false)
+  const [representatives, setRepresentatives] = useState({
+    rows: [] as RepresentativeI[],
+    count: 0
+  })
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors }
   } = useForm<StudentSchemaT>({
     resolver: zodResolver(StudentSchema)
+  })
+
+  useGetRepresentativesQuery(0, 9999)
+  useCheckEvent({
+    event: 'GET_REPRESENTATIVES_RESPONSE',
+    callback: (representatives: any) => {
+      if (representatives) {
+        setRepresentatives(representatives)
+      }
+    }
   })
 
   useEffect(() => {
@@ -132,6 +151,31 @@ export const StudentModal = ({
           error={!!errors?.phone_number}
           helperText={errors.phone_number?.message}
         />
+
+        {/* Representative select */}
+        <div style={{ marginBottom: '1rem' }}>
+          <Controller
+            control={control}
+            name="representative"
+            render={({ field }) => (
+              <MaterialSelect
+                label="Representante"
+                fullWidth
+                {...field}
+                value={field.value ?? ''}
+                onChange={(e) => field.onChange(Number((e.target as HTMLSelectElement).value))}
+                data={representatives?.rows?.map((r) => ({
+                  label: `${r.first_name} ${r.first_last_name} - ${r.dni}`,
+                  value: r.id
+                }))}
+                error={!!errors?.representative}
+              />
+            )}
+          />
+          {errors.representative && (
+            <p style={{ color: 'red', fontSize: 12 }}>{errors.representative.message}</p>
+          )}
+        </div>
 
         <div
           style={{ marginTop: '1rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}

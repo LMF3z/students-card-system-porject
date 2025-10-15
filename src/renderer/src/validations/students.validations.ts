@@ -56,7 +56,13 @@ export const StudentSchema = z.object({
       error: 'El número de teléfono es obligatorio'
     })
     .min(10, { message: 'El número de teléfono debe tener al menos 10 caracteres' })
-    .max(50, { message: 'El número de teléfono debe tener máximo 50 caracteres' })
+    .max(50, { message: 'El número de teléfono debe tener máximo 50 caracteres' }),
+  representative: z
+    .number({
+      error: 'El representante es obligatorio'
+    })
+    .int({ message: 'El representante debe ser un valor numérico' })
+    .positive({ message: 'El representante debe ser un id válido' })
 })
 
 export type StudentSchemaT = z.infer<typeof StudentSchema>

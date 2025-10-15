@@ -20,7 +20,7 @@ import {
   useUpdateRepresentativeMutation
 } from '@renderer/internal/hooks/queries'
 import { RepresentativeI } from '@renderer/internal/interface'
-import { Loader, MaterialButton, StudentModal } from '@renderer/presentation/components'
+import { Loader, MaterialButton, RepresentativeModal } from '@renderer/presentation/components'
 
 export const RepresentativeScreen = () => {
   const { offset, limit, page, handlePageChange, handleRowsPerPageChange } = usePaginate()
@@ -168,8 +168,7 @@ export const RepresentativeScreen = () => {
         }}
       />
 
-      {/* Reuse Student modal components for now; consider creating Representative-specific modals later */}
-      <StudentModal
+      <RepresentativeModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         mode={modalMode}

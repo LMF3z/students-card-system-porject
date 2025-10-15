@@ -6,6 +6,8 @@ export * from './modals/SchoolGradesModal'
 export * from './modals/TeacherModal'
 export * from './modals/StudentModal'
 export * from './modals/StudentCardModal'
+export * from './modals/RepresentativeModal'
+export * from './modals/RepresentativeCardModal'
 
 export * from './PublicRoute'
 export * from './PrivateRoute'

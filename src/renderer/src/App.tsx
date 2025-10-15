@@ -7,6 +7,7 @@ import {
   HomeScreen,
   LoginScreen,
   RegisterScreen,
+  RepresentativeScreen,
   SchoolGradesScreen,
   StudentsScreen,
   TeachersScreen
@@ -28,7 +29,9 @@ function App() {
               <Route element={<PrivateRoute />}>
                 <Route path={router.homeScreen} element={<HomeScreen />} />
                 <Route path={router.teachersScreen} element={<TeachersScreen />} />
+                <Route path={router.representativesScreen} element={<RepresentativeScreen />} />
                 <Route path={router.schoolGradesScreen} element={<SchoolGradesScreen />} />
+
                 <Route path={router.studentsScreen} element={<StudentsScreen />} />
               </Route>
 

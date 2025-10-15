@@ -1,5 +1,6 @@
 export * from './user/user.interface'
 export * from './grades/grades.interface'
 export * from './teachers/teacher-interface'
+export * from './representatives/representative.interface'
 export * from './students/student.interface'
 export * from './enrollment/enrollment.interface'

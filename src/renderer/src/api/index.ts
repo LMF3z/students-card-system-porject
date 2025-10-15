@@ -1,5 +1,6 @@
 export * from './auth/auth.api'
 export * from './school-grades/school-grades.api'
 export * from './teachers/teachers.api'
+export * from './representatives/representatives.api'
 export * from './students/students.api'
 export * from './enrollment/enrollment.api'

@@ -13,6 +13,7 @@ export class StudentModel extends Model<StudentI> implements StudentI {
   phone_number!: string
   photo?: string
   register_by!: number
+  representative!: number
 
   createdAt?: Date
   updatedAt?: Date
@@ -64,6 +65,10 @@ export const loadStudentModel = (sequelize: Sequelize) => {
         defaultValue: null
       },
       register_by: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      representative: {
         type: DataTypes.INTEGER,
         allowNull: false
       }

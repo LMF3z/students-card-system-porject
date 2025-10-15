@@ -9,6 +9,7 @@ export interface StudentI {
   phone_number: string
   photo?: string
   register_by: number
+  representative: number
 
   createdAt?: Date
   updatedAt?: Date

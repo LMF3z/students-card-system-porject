@@ -24,9 +24,12 @@ export const getEnrollmentController = async (id: number) => {
 export const getEnrollmentsController = async (params: {
   offset?: number
   limit?: number
-  userId: number
+  userId?: number
 }) => {
-  const result = await EnrollmentRepository.findAll(params)
+  const result = params?.userId
+    ? await EnrollmentRepository.findAllRegisterById({ ...params, userId: params.userId! })
+    : await EnrollmentRepository.findAll(params)
+
   return { rows: result.rows.map((c) => c.dataValues), count: result.count }
 }
 

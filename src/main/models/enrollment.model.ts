@@ -7,6 +7,7 @@ export class EnrollmentModel extends Model<EnrollmentI> implements EnrollmentI {
   school_grade!: number
   start_period!: number
   end_period!: number
+  register_by!: number
 
   createdAt?: Date
   updatedAt?: Date
@@ -36,6 +37,10 @@ export const loadEnrollmentModel = (se: Sequelize) => {
         allowNull: false
       },
       end_period: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      register_by: {
         type: DataTypes.INTEGER,
         allowNull: false
       }

@@ -10,9 +10,14 @@ import {
 import { StudentI } from '@renderer/internal/interface'
 
 export const useGetStudentsQuery = (offset = 0, limit = 20) => {
+  const { isAuth } = useAuthStore()
+
   return useQuery({
     queryKey: [KEY_GET_STUDENTS, offset],
-    queryFn: () => getStudentsApi({ offset, limit })
+    queryFn: () =>
+      isAuth?.role === 'SUPER_ADMIN'
+        ? getStudentsApi({ offset, limit })
+        : getStudentsApi({ offset, limit, userId: isAuth?.id })
   })
 }
 

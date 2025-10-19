@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Modal } from '@mui/material'
+import { Autocomplete, Modal } from '@mui/material'
 import { StudentSchema, StudentSchemaT } from '@renderer/validations'
 import { useGetRepresentativesQuery } from '@renderer/internal/hooks/queries'
 
 import { RepresentativeI, StudentI } from '@renderer/internal/interface'
 import { MaterialInput } from '../inputs/MaterialInput'
 import { MaterialButton } from '../buttons/MaterialButton'
-import { MaterialSelect } from '../selects/MaterialSelect'
 import { useCheckEvent } from '@renderer/internal/hooks'
 
 interface StudentModalProps {
@@ -35,7 +33,7 @@ export const StudentModal = ({
 
   const {
     register,
-    control,
+    setValue,
     handleSubmit,
     reset,
     formState: { errors }
@@ -89,6 +87,26 @@ export const StudentModal = ({
         className="p-4 absolute bg-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         style={{ padding: '1rem' }}
       >
+        <Autocomplete
+          fullWidth
+          disablePortal
+          options={representatives?.rows?.map((r) => ({
+            label: `${r.first_name} ${r.first_last_name} - ${r.dni}`,
+            value: r.id
+          }))}
+          onChange={(_, newValue) => setValue('representative', newValue?.value!)}
+          renderInput={(params) => (
+            <MaterialInput
+              {...params}
+              label="Representante"
+              fullWidth
+              style={{ marginBottom: '1rem' }}
+              error={!!errors?.representative}
+              helperText={errors.representative?.message}
+            />
+          )}
+        />
+
         <MaterialInput
           label="Primer nombre"
           fullWidth
@@ -153,7 +171,7 @@ export const StudentModal = ({
         />
 
         {/* Representative select */}
-        <div style={{ marginBottom: '1rem' }}>
+        {/* <div style={{ marginBottom: '1rem' }}>
           <Controller
             control={control}
             name="representative"
@@ -175,7 +193,7 @@ export const StudentModal = ({
           {errors.representative && (
             <p style={{ color: 'red', fontSize: 12 }}>{errors.representative.message}</p>
           )}
-        </div>
+        </div> */}
 
         <div
           style={{ marginTop: '1rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}

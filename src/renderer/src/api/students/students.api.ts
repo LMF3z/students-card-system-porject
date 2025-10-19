@@ -4,7 +4,7 @@ export const createStudentApi = (payload: StudentI) => {
   return window.api.CREATE_STUDENT(payload)
 }
 
-export const getStudentsApi = (params: { offset?: number; limit?: number }) => {
+export const getStudentsApi = (params: { offset?: number; limit?: number; userId?: number }) => {
   return window.api.GET_STUDENTS(params)
 }
 

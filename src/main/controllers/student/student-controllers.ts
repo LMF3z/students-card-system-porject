@@ -24,9 +24,12 @@ export const getStudentController = async (id: number) => {
 export const getStudentsController = async (params: {
   offset?: number
   limit?: number
-  userId: number
+  userId?: number
 }) => {
-  const result = await StudentsRepository.findAll(params)
+  const result = params?.userId
+    ? await StudentsRepository.findAllRegisterById({ ...params, userId: params.userId! })
+    : await StudentsRepository.findAll(params)
+
   return { rows: result.rows.map((c) => c.dataValues), count: result.count }
 }
 

@@ -18,9 +18,22 @@ export class EnrollmentRepository {
     return saved?.dataValues
   }
 
-  static async findAll(params: { offset?: number; limit?: number; userId: number }) {
+  static async findAll(params: { offset?: number; limit?: number }) {
     const { offset = 0, limit = LIMIT } = params
     const saved = await EnrollmentModel.findAndCountAll({
+      offset,
+      limit
+    })
+
+    return saved
+  }
+
+  static async findAllRegisterById(params: { offset?: number; limit?: number; userId: number }) {
+    const { offset = 0, limit = LIMIT, userId } = params
+    const saved = await EnrollmentModel.findAndCountAll({
+      where: {
+        register_by: userId
+      },
       offset,
       limit
     })

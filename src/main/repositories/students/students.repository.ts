@@ -21,9 +21,22 @@ export class StudentsRepository {
     return saved?.dataValues
   }
 
-  static async findAll(params: { offset?: number; limit?: number; userId: number }) {
+  static async findAll(params: { offset?: number; limit?: number }) {
     const { offset = 0, limit = LIMIT } = params
     const saved = await StudentModel.findAndCountAll({
+      offset,
+      limit
+    })
+
+    return saved
+  }
+
+  static async findAllRegisterById(params: { offset?: number; limit?: number; userId: number }) {
+    const { offset = 0, limit = LIMIT, userId } = params
+    const saved = await StudentModel.findAndCountAll({
+      where: {
+        register_by: userId
+      },
       offset,
       limit
     })

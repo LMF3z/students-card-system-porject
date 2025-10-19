@@ -9,7 +9,8 @@ import {
   TableRow,
   Typography,
   IconButton,
-  TablePagination
+  TablePagination,
+  Autocomplete
 } from '@mui/material'
 import { Trash2 } from 'lucide-react'
 
@@ -22,7 +23,7 @@ import {
   useCreateEnrollmentMutation,
   useDeleteEnrollmentMutation
 } from '@renderer/internal/hooks/queries'
-import { Loader, MaterialButton, MaterialSelect } from '@renderer/presentation/components'
+import { Loader, MaterialButton, MaterialInput } from '@renderer/presentation/components'
 
 export const HomeScreen = () => {
   const [students, setStudents] = useState({ rows: [] as StudentI[], count: 0 })
@@ -34,7 +35,7 @@ export const HomeScreen = () => {
   const { offset, limit, page, handlePageChange, handleRowsPerPageChange } = usePaginate()
 
   // Obtener estudiantes y grados
-  const { isPending: isLoadingStudents } = useGetStudentsQuery(offset, limit)
+  const { isPending: isLoadingStudents } = useGetStudentsQuery(offset, 9999)
   useCheckEvent({
     event: 'GET_STUDENTS_RESPONSE',
     callback: (results: any) => {
@@ -43,7 +44,7 @@ export const HomeScreen = () => {
       }
     }
   })
-  const { isPending: isLoadingGrades } = useGetSchoolGradesQuery(offset, limit)
+  const { isPending: isLoadingGrades } = useGetSchoolGradesQuery(offset, 9999)
   useCheckEvent({
     event: 'GET_SCHOOL_GRADES_RESPONSE',
     callback: (results: any) => {
@@ -122,26 +123,28 @@ export const HomeScreen = () => {
           }}
           style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}
         >
-          <MaterialSelect
-            label="Estudiante"
-            value={selectedStudent}
-            onChange={(e) => setSelectedStudent(e.target.value as number)}
-            disabled={isLoadingStudents || students?.rows?.length === 0}
-            data={students?.rows?.map((s) => ({
-              label: `${s.first_name} ${s.first_last_name}`,
-              value: s.id
+          <Autocomplete
+            fullWidth
+            disablePortal
+            options={students?.rows?.map((r) => ({
+              label: `${r.first_name} ${r.first_last_name} - ${r.dni}`,
+              value: r.id
             }))}
+            disabled={isLoadingStudents || students?.rows?.length === 0}
+            onChange={(_, newValue) => setSelectedStudent(newValue?.value! as number)}
+            renderInput={(params) => <MaterialInput {...params} label="Estudiante" />}
           />
 
-          <MaterialSelect
-            label="Grado"
-            value={selectedGrade}
-            onChange={(e) => setSelectedGrade(e.target.value as number)}
-            disabled={isLoadingGrades || grades?.rows?.length === 0}
-            data={grades?.rows?.map((s) => ({
-              label: `${s.grade_title} ${s.grade_section}`,
-              value: s.id
+          <Autocomplete
+            fullWidth
+            disablePortal
+            options={grades?.rows?.map((r) => ({
+              label: `${r.grade_title} ${r.grade_section}`,
+              value: r.id
             }))}
+            disabled={isLoadingGrades || grades?.rows?.length === 0}
+            onChange={(_, newValue) => setSelectedGrade(newValue?.value! as number)}
+            renderInput={(params) => <MaterialInput {...params} label="Grado" />}
           />
 
           <div>

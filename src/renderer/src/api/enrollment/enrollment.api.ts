@@ -4,7 +4,7 @@ export const createEnrollmentApi = (payload: EnrollmentI) => {
   return window.api.CREATE_ENROLLMENT(payload)
 }
 
-export const getEnrollmentsApi = (params: { offset?: number; limit?: number }) => {
+export const getEnrollmentsApi = (params: { offset?: number; limit?: number; userId?: number }) => {
   return window.api.GET_ENROLLMENTS(params)
 }
 

@@ -107,7 +107,7 @@ export const RepresentativeModal = ({
         />
 
         <MaterialInput
-          label="DNI"
+          label="C.I."
           fullWidth
           style={{ marginBottom: '1rem' }}
           {...register('dni')}

@@ -125,7 +125,7 @@ export const StudentsScreen = () => {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {['Nombres', 'DNI', 'Dirección', 'Celular', 'Acciones'].map((column) => (
+              {['Nombres', 'C.I.', 'Dirección', 'Celular', 'Acciones'].map((column) => (
                 <TableCell key={column} align="center">
                   {column}
                 </TableCell>

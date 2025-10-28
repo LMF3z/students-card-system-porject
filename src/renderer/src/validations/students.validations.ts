@@ -41,10 +41,10 @@ export const StudentSchema = z.object({
     }),
   dni: z
     .string({
-      error: 'El DNI es obligatorio'
+      error: 'El C.I. es obligatorio'
     })
-    .min(8, { message: 'El DNI debe tener exactamente 8 caracteres' })
-    .regex(/^\d+$/, { message: 'El DNI solo puede contener números' }),
+    .min(8, { message: 'El C.I. debe tener exactamente 8 caracteres' })
+    .regex(/^\d+$/, { message: 'El C.I. solo puede contener números' }),
   address: z
     .string({
       error: 'La dirección es obligatoria'

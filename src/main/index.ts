@@ -9,6 +9,7 @@ import { loadIpcHandlers } from './ipcHandlers/loadIpcHanlder'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
+    title: 'Saturno Medina Ovalles',
     width: 800,
     height: 600,
     minHeight: 600,
@@ -17,7 +18,8 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
-    }
+    },
+    autoHideMenuBar: true
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -39,7 +41,6 @@ function createWindow(): void {
 
 app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.electron')
-
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })

@@ -107,7 +107,7 @@ export const TeacherModal = ({
         />
 
         <MaterialInput
-          label="DNI"
+          label="C.I."
           fullWidth
           style={{ marginBottom: '1rem' }}
           {...register('dni')}

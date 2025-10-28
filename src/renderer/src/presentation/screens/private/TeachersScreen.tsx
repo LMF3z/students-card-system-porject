@@ -119,7 +119,7 @@ export const TeachersScreen = () => {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {['Nombres', 'DNI', 'Dirección', 'Celular', 'Correo', 'Acciones'].map((column) => (
+              {['Nombres', 'C.I.', 'Dirección', 'Celular', 'Correo', 'Acciones'].map((column) => (
                 <TableCell key={column} align="center">
                   {column}
                 </TableCell>

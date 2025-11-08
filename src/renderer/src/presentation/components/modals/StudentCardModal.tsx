@@ -77,7 +77,7 @@ export const StudentCardModal = ({ student, isOpen, onClose }: Props) => {
 
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">
-                    DNI
+                    C.I.
                   </p>
                   <p className="text-sm font-mono font-semibold text-foreground">{student?.dni}</p>
                 </div>
